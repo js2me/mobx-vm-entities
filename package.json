@@ -1,8 +1,9 @@
 {
   "name": "mobx-vm-entities",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "main": "dist/index.js",
   "files": [
-    "*"
+    "dist"
   ],
   "scripts": {
     "prebuild": "rimraf dist & eslint . --fix",
