@@ -11,7 +11,6 @@ import {
 
 import {
   ViewModel,
-  ViewModelClass,
   ViewModelCreateConfig,
   ViewModelStore,
 } from '../view-model';
@@ -24,15 +23,6 @@ export type ViewModelProps<VM extends ViewModel<any>> = {
 
 export type ViewModelInputProps<VM extends ViewModel<any>> =
   VM['payload'] extends EmptyObject ? AnyObject : { payload: VM['payload'] };
-
-export type ViewModelFabric<VM extends ViewModel<any>> = (
-  model: ViewModelClass<VM>,
-  rootStore: RootStore,
-  payload: VM['payload'],
-  id: string,
-  parentVM: string | null,
-  Fallback?: ComponentType,
-) => VM;
 
 export type ViewModelHocConfig<VM extends ViewModel<any>> = {
   useViewModels: () => ViewModelStore;
