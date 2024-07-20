@@ -36,6 +36,7 @@ export class ViewModelStoreImpl implements ViewModelStore {
       id: config.id,
       payload: config.payload,
       parentViewModelId: config.parentViewModelId,
+      ctx: config.ctx,
     };
 
     return new VM(params);

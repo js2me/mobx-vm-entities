@@ -1,5 +1,7 @@
-export const generateId = () =>
-  Math.random().toString() + Date.now().toString();
+export const generateId = (() => {
+  let counter = 0;
+  return () => (counter++).toString(16);
+})();
 
 export const createLinearNumericIdGenerator = (size: number = 9) => {
   let lastCount = 0;

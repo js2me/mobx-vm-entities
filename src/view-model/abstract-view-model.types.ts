@@ -4,4 +4,5 @@ export interface AbstractViewModelParams<
   id: string;
   payload: Payload;
   parentViewModelId?: Maybe<string>;
+  ctx?: AnyObject;
 }

@@ -18,4 +18,5 @@ export interface ViewModelCreateConfig<VM extends ViewModel<any>> {
   parentViewModelId: string | null;
   fallback?: ComponentType;
   instances: Map<string, ViewModel>;
+  ctx?: AnyObject;
 }

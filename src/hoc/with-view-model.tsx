@@ -9,14 +9,14 @@ import {
   useRef,
 } from 'react';
 
-import { ViewModel, ViewModelClass, ViewModelStore } from '../view-model';
+import {
+  ViewModel,
+  ViewModelClass,
+  ViewModelCreateConfig,
+  ViewModelStore,
+} from '../view-model';
 
 export const ActiveViewContext = createContext<string>('');
-
-type ViewModelHocContext = {
-  generateNumericId?: (() => string) | undefined;
-  shortStaticId?: string;
-};
 
 export type ViewModelProps<VM extends ViewModel<any>> = {
   model: VM;
@@ -39,12 +39,9 @@ export type ViewModelHocConfig<VM extends ViewModel<any>> = {
 
   id?: Maybe<string>;
   fallback?: ComponentType;
-  fabric?: ViewModelFabric<VM>;
-  generateId?: (
-    vmClass: ViewModelClass<VM>,
-    id: Maybe<string>,
-    ctx: ViewModelHocContext,
-  ) => string;
+  ctx?: AnyObject;
+
+  factory?: (config: ViewModelCreateConfig<VM>) => VM;
 };
 
 export function withViewModel<VM extends ViewModel<any>>(
@@ -58,7 +55,7 @@ export function withViewModel(
   Model: Class<any>,
   config: ViewModelHocConfig<any>,
 ) {
-  const ctx: AnyObject = {};
+  const ctx: AnyObject = config.ctx ?? {};
 
   const useViewModels = config.useViewModels;
 
@@ -84,14 +81,19 @@ export function withViewModel(
       const id = idRef.current;
 
       if (!instances.has(id)) {
-        const instance = viewModels.create<any>({
+        const configCreate: ViewModelCreateConfig<any> = {
           id,
           parentViewModelId,
           payload,
           VM: Model,
           fallback: config.fallback,
           instances,
-        });
+          ctx,
+        };
+
+        const instance =
+          config.factory?.(configCreate) ??
+          viewModels.create<any>(configCreate);
 
         instances.set(id, instance);
       }
