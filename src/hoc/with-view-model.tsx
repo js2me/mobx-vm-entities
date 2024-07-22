@@ -73,7 +73,7 @@ export function withViewModel(
 
         const instance =
           config?.factory?.(configCreate) ??
-          viewModels.create<any>(configCreate);
+          viewModels.createViewModel<any>(configCreate);
 
         instances.set(id, instance);
       }

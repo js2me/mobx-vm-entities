@@ -59,14 +59,14 @@ Because it requires (in most cases) the `rootStore`
 ```tsx  
 import {
   AbstractViewModelParams,
-  ViewModelStoreImpl as LibViewModelStoreImpl,
+  AbstractViewModelStore,
   ViewModel,
   ViewModelCreateConfig,
   ViewModelStore,
 } from 'mobx-vm-entities';
 
 export class ViewModelStoreImpl
-  extends LibViewModelStoreImpl
+  extends AbstractViewModelStore
   implements ViewModelStore
 {
   constructor(protected rootStore: RootStore) {
@@ -135,6 +135,12 @@ class MyButtonViewModel extends ViewModelImpl<Payload> implements ViewModel<Payl
 
   mount() {
     super.mount();
+
+    this.disposer.add(
+      reaction(() => this.payload.test > 10, (ok) => {
+        console.info("ok", ok)
+      })
+    )
   }
 
   unmount() {
@@ -147,6 +153,12 @@ class MyButtonViewModel extends ViewModelImpl<Payload> implements ViewModel<Payl
 
   handleClick = () => {
     console.info("click")
+  }
+
+  dispose() {
+    super.dispose();
+
+    // your dispose
   }
 }
 
@@ -172,8 +184,6 @@ export const MyButton = withViewModel(
 
 
 export const SomeOtherComponent = () => {
-
-
   return (
     <div>
       <MyButton payload={{ test: 10 }} />

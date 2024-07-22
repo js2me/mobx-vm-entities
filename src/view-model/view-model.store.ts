@@ -40,7 +40,9 @@ export interface ViewModelStore extends Disposable {
    */
   isAbleToRenderView(id: Maybe<ViewModel['id']>): boolean;
 
-  create<VM extends ViewModel<any>>(config: ViewModelCreateConfig<VM>): VM;
+  createViewModel<VM extends ViewModel<any>>(
+    config: ViewModelCreateConfig<VM>,
+  ): VM;
 
   generateViewModelId<VM extends ViewModel<any>>(
     config: ViewModelGenerateIdConfig<VM>,

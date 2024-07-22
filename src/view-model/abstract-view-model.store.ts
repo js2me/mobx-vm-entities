@@ -3,7 +3,6 @@ import { action, observable, runInAction } from 'mobx';
 
 import { createLinearNumericIdGenerator, generateId } from '../utils';
 
-import { AbstractViewModelParams } from './abstract-view-model.types';
 import { ViewModel } from './view-model';
 import { ViewModelStore } from './view-model.store';
 import {
@@ -11,7 +10,7 @@ import {
   ViewModelGenerateIdConfig,
 } from './view-model.store.types';
 
-export class ViewModelStoreImpl implements ViewModelStore {
+export abstract class AbstractViewModelStore implements ViewModelStore {
   viewModels = observable.map<string, ViewModel>();
   viewModelsByClasses = observable.map<string, string[]>();
 
@@ -29,18 +28,9 @@ export class ViewModelStoreImpl implements ViewModelStore {
 
   constructor() {}
 
-  create<VM extends ViewModel<any>>(config: ViewModelCreateConfig<VM>): VM {
-    const VM = config.VM;
-
-    const params: AbstractViewModelParams<VM['payload']> = {
-      id: config.id,
-      payload: config.payload,
-      parentViewModelId: config.parentViewModelId,
-      ctx: config.ctx,
-    };
-
-    return new VM(params);
-  }
+  abstract createViewModel<VM extends ViewModel<any>>(
+    config: ViewModelCreateConfig<VM>,
+  ): VM;
 
   generateViewModelId<VM extends ViewModel<any>>(
     config: ViewModelGenerateIdConfig<VM>,
