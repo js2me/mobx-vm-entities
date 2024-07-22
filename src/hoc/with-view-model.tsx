@@ -1,7 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import {
   ComponentType,
-  createContext,
   ReactNode,
   useContext,
   useEffect,
@@ -9,13 +8,8 @@ import {
   useRef,
 } from 'react';
 
-import {
-  ViewModel,
-  ViewModelCreateConfig,
-  ViewModelStore,
-} from '../view-model';
-
-export const ActiveViewContext = createContext<string>('');
+import { ActiveViewContext, ViewModelsContext } from '../contexts';
+import { ViewModel, ViewModelCreateConfig } from '../view-model';
 
 export type ViewModelProps<VM extends ViewModel<any>> = {
   model: VM;
@@ -25,8 +19,6 @@ export type ViewModelInputProps<VM extends ViewModel<any>> =
   VM['payload'] extends EmptyObject ? AnyObject : { payload: VM['payload'] };
 
 export type ViewModelHocConfig<VM extends ViewModel<any>> = {
-  useViewModels: () => ViewModelStore;
-
   id?: Maybe<string>;
   fallback?: ComponentType;
   ctx?: AnyObject;
@@ -36,34 +28,32 @@ export type ViewModelHocConfig<VM extends ViewModel<any>> = {
 
 export function withViewModel<VM extends ViewModel<any>>(
   model: Class<VM>,
-  config: ViewModelHocConfig<VM>,
+  config?: ViewModelHocConfig<VM>,
 ): <Props extends AnyObject = ViewModelProps<VM>>(
   Component: ComponentType<Props & ViewModelProps<VM>>,
 ) => (props: Omit<Props, 'model'> & ViewModelInputProps<VM>) => ReactNode;
 
 export function withViewModel(
   Model: Class<any>,
-  config: ViewModelHocConfig<any>,
+  config?: ViewModelHocConfig<any>,
 ) {
-  const ctx: AnyObject = config.ctx ?? {};
-
-  const useViewModels = config.useViewModels;
+  const ctx: AnyObject = config?.ctx ?? {};
 
   return (Component: ComponentType<any>) => {
     const instances = new Map<string, ViewModel>();
 
     const ConnectedViewModel = observer(({ payload, ...props }: any) => {
       const idRef = useRef<string>('');
+      const viewModels = useContext(ViewModelsContext);
       const parentViewModelId = useContext(ActiveViewContext) || null;
-      const viewModels = useViewModels();
 
       if (!idRef.current) {
         idRef.current = viewModels.generateViewModelId({
           ctx,
-          id: config.id,
+          id: config?.id,
           VM: Model,
           parentViewModelId,
-          fallback: config.fallback,
+          fallback: config?.fallback,
           instances,
         });
       }
@@ -76,13 +66,13 @@ export function withViewModel(
           parentViewModelId,
           payload,
           VM: Model,
-          fallback: config.fallback,
+          fallback: config?.fallback,
           instances,
           ctx,
         };
 
         const instance =
-          config.factory?.(configCreate) ??
+          config?.factory?.(configCreate) ??
           viewModels.create<any>(configCreate);
 
         instances.set(id, instance);
@@ -111,7 +101,7 @@ export function withViewModel(
         );
       }
 
-      return config.fallback ? <config.fallback /> : null;
+      return config?.fallback ? <config.fallback /> : null;
     });
 
     if (process.env.NODE_ENV !== 'production') {
