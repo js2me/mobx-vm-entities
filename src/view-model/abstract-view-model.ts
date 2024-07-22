@@ -5,7 +5,7 @@ import { Disposer } from 'mobx-disposer-util';
 import { AbstractViewModelParams } from './abstract-view-model.types';
 import { ViewModel } from './view-model';
 
-export abstract class AbstractViewModelImpl<
+export abstract class AbstractViewModel<
   Payload extends AnyObject = EmptyObject,
   ParentViewModel extends ViewModel<any> = ViewModel<any>,
 > implements ViewModel<Payload>

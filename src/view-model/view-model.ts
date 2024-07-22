@@ -1,6 +1,6 @@
 import { Disposable } from 'mobx-disposer-util';
 
-import type { AbstractViewModelImpl } from './abstract-view-model.impl';
+import type { AbstractViewModel } from './abstract-view-model';
 
 export interface ViewModel<
   Payload extends AnyObject = EmptyObject,
@@ -29,5 +29,5 @@ export interface ViewModel<
 
 export type ViewModelClass<T extends ViewModel<any> = ViewModel<any>> = Class<
   T,
-  ConstructorParameters<typeof AbstractViewModelImpl<T['payload']>>
+  ConstructorParameters<typeof AbstractViewModel<T['payload']>>
 >;
