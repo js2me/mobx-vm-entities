@@ -90,7 +90,7 @@ export class ViewModelStoreImpl
 
 ```  
 
-### 3. Attach your ViewModelStore to `rootStore`  
+### 3. Attach your `ViewModelStore` to `rootStore`  
 
 ```ts
 rootStore.viewModels = new ViewModelStoreImpl(rootStore);
@@ -123,14 +123,13 @@ export const App = observer(() => {
 ### 4. Use it  
 
 ```tsx
-import { ViewModel } from "mobx-vm-entities";
 import { ViewModelImpl } from "your-import";
 
 type Payload = {
   test: number
 }
 
-class MyButtonViewModel extends ViewModelImpl<Payload> implements ViewModel<Payload> {
+class MyButtonViewModel extends ViewModelImpl<Payload> {
   title = 'click me!';
 
   mount() {
