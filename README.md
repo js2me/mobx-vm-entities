@@ -120,7 +120,7 @@ export const App = observer(() => {
 ```
 
 
-### 4. Use it  
+### 5. Use it  
 
 ```tsx
 import { ViewModelImpl } from "your-import";
