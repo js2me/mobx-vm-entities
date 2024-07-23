@@ -1,6 +1,6 @@
 {
   "name": "mobx-vm-entities",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "main": "index.js",
   "typings": "index.d.ts",
   "files": [
@@ -9,9 +9,9 @@
   "scripts": {
     "prebuild": "rimraf dist & eslint . --fix",
     "build": "tsc",
-    "prepub": "pnpm run build & copy package.json dist",
+    "prepub": "pnpm run build & copy package.json dist & copy README.md dist & copy LICENSE dist",
     "pub": "cd dist & npm publish",
-    "postpub": "cd dist & del package.json"
+    "postpub": "rimraf dist"
   },
   "keywords": [
     "mobx",
