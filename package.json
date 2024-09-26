@@ -9,7 +9,7 @@
   "scripts": {
     "prebuild": "rimraf dist & eslint . --fix",
     "build": "tsc",
-    "prepub": "pnpm run build & copy package.json dist & copy README.md dist & copy LICENSE dist",
+    "prepub": "pnpm run build && cp package.json dist && cp README.md dist && cp LICENSE dist",
     "pub": "cd dist & npm publish",
     "postpub": "rimraf dist"
   },
