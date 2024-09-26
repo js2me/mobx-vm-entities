@@ -15,7 +15,7 @@ importers:
         specifier: '>=6.12.4'
         version: 6.13.0
       mobx-disposer-util:
-        specifier: latest
+        specifier: '*'
         version: 0.0.1
       mobx-react-lite:
         specifier: '>=4.0.7'

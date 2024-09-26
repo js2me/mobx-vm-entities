@@ -19,10 +19,29 @@ export type ViewModelInputProps<VM extends ViewModel<any>> =
   VM['payload'] extends EmptyObject ? AnyObject : { payload: VM['payload'] };
 
 export type ViewModelHocConfig<VM extends ViewModel<any>> = {
+  /**
+   * Уникальный идентификатор вьюшки
+   */
   id?: Maybe<string>;
   fallback?: ComponentType;
+  /**
+   * Доп. данные, которые могут быть полезны при создании VM
+   */
   ctx?: AnyObject;
+  /**
+   * Функция, в которой можно вызывать доп. реакт хуки в результирующем компоненте
+   */
+  reactHooks?: (allProps: any) => void;
 
+  /**
+   * Функция, которая должна возвращать payload для VM
+   * по умолчанию это - (props) => props.payload
+   */
+  getPayload?: (allProps: any) => any;
+
+  /**
+   * Функция создания экземпляра класса VM
+   */
   factory?: (config: ViewModelCreateConfig<VM>) => VM;
 };
 
@@ -42,7 +61,13 @@ export function withViewModel(
   return (Component: ComponentType<any>) => {
     const instances = new Map<string, ViewModel>();
 
-    const ConnectedViewModel = observer(({ payload, ...props }: any) => {
+    const ConnectedViewModel = observer((allProps: any) => {
+      const { payload: rawPayload, ...componentProps } = allProps;
+
+      const payload = config?.getPayload
+        ? config.getPayload(allProps)
+        : rawPayload;
+
       const idRef = useRef<string>('');
       const viewModels = useContext(ViewModelsContext);
       const parentViewModelId = useContext(ActiveViewContext) || null;
@@ -93,10 +118,12 @@ export function withViewModel(
         instance.setPayload(payload);
       }, [payload]);
 
+      config?.reactHooks?.(allProps);
+
       if (viewModels.isAbleToRenderView(id) && instance) {
         return (
           <ActiveViewContext.Provider value={id}>
-            <Component {...(props as any)} model={instance} />
+            <Component {...(componentProps as any)} model={instance} />
           </ActiveViewContext.Provider>
         );
       }
