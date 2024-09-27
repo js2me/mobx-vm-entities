@@ -1,4 +1,4 @@
-import { Disposer } from 'disposer-util';
+import { Disposer, IDisposer } from 'disposer-util';
 import { isEqual } from 'lodash-es';
 import { action, observable } from 'mobx';
 
@@ -12,7 +12,7 @@ export abstract class AbstractViewModel<
   ParentViewModel extends ViewModel<any> = ViewModel<any>,
 > implements ViewModel<Payload>
 {
-  protected disposer = new Disposer();
+  protected disposer: IDisposer = new Disposer();
 
   id: string;
 

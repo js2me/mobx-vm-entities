@@ -1,6 +1,6 @@
 {
   "name": "mobx-vm-entities",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "typings": "index.d.ts",
   "files": [
@@ -33,7 +33,7 @@
     "lodash-es": "^4.17.21"
   },
   "peerDependencies": {
-    "disposer-util": "*",
+    "disposer-util": "^1.0.2",
     "mobx": ">=6.12.4",
     "mobx-react-lite": ">=4.0.7",
     "react": ">=18.3.1"
