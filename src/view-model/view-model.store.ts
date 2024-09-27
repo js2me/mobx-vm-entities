@@ -1,4 +1,6 @@
-import { Disposable } from 'mobx-disposer-util';
+import { Disposable } from 'disposer-util';
+
+import { Class, Maybe } from '../utils/types';
 
 import { ViewModel } from './view-model';
 import {

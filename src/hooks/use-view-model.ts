@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 
 import { ActiveViewContext, ViewModelsContext } from '../contexts';
+import { Class, Maybe } from '../utils/types';
 import type { ViewModel } from '../view-model/view-model';
 
 export const useViewModel = <T extends ViewModel<any>>(

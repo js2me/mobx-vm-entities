@@ -1,5 +1,7 @@
 import { ComponentType } from 'react';
 
+import { AnyObject, Class, Maybe } from '../utils/types';
+
 import { ViewModel } from './view-model';
 
 export interface ViewModelGenerateIdConfig<VM extends ViewModel<any>> {

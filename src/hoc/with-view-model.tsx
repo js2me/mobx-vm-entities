@@ -9,6 +9,7 @@ import {
 } from 'react';
 
 import { ActiveViewContext, ViewModelsContext } from '../contexts';
+import { AnyObject, Class, EmptyObject, Maybe } from '../utils/types';
 import { ViewModel, ViewModelCreateConfig } from '../view-model';
 
 export type ViewModelProps<VM extends ViewModel<any>> = {
@@ -112,10 +113,12 @@ export function withViewModel(
           viewModels.detach(id);
           instances.delete(id);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
 
       useLayoutEffect(() => {
         instance.setPayload(payload);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [payload]);
 
       config?.reactHooks?.(allProps);

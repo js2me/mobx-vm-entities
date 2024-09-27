@@ -1,6 +1,8 @@
+import { Disposer } from 'disposer-util';
 import { isEqual } from 'lodash-es';
 import { action, observable } from 'mobx';
-import { Disposer } from 'mobx-disposer-util';
+
+import { AnyObject, EmptyObject, Maybe } from '../utils/types';
 
 import { AbstractViewModelParams } from './abstract-view-model.types';
 import { ViewModel } from './view-model';

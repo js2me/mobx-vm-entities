@@ -1,4 +1,6 @@
-import { Disposable } from 'mobx-disposer-util';
+import { Disposable } from 'disposer-util';
+
+import { AnyObject, Class, EmptyObject } from '../utils/types';
 
 import type { AbstractViewModel } from './abstract-view-model';
 

@@ -2,6 +2,7 @@ import { last } from 'lodash-es';
 import { action, observable, runInAction } from 'mobx';
 
 import { createLinearNumericIdGenerator, generateId } from '../utils';
+import { Class, Maybe } from '../utils/types';
 
 import { ViewModel } from './view-model';
 import { ViewModelStore } from './view-model.store';
