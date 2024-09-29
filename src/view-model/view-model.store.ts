@@ -14,6 +14,11 @@ export interface ViewModelStore extends Disposable {
   ): string | null;
 
   /**
+   * Общее количество монтированных вьюшек
+   */
+  mountedViewsCount: number;
+
+  /**
    * Проверить наличие инстанса вью модели
    */
   has<T extends ViewModel<any>>(

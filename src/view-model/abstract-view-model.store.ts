@@ -1,5 +1,5 @@
 import { last } from 'lodash-es';
-import { action, observable, runInAction } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 
 import { createLinearNumericIdGenerator, generateId } from '../utils';
 import { Class, Maybe } from '../utils/types';
@@ -28,6 +28,14 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
   unmountingViews = observable.set<string>();
 
   constructor() {}
+
+  @computed
+  get mountedViewsCount() {
+    return Array.from(this.instanceAttachedCount.values()).reduce(
+      (sum, count) => sum + count,
+      0,
+    );
+  }
 
   abstract createViewModel<VM extends ViewModel<any>>(
     config: ViewModelCreateConfig<VM>,
