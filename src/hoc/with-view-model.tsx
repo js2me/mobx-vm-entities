@@ -12,6 +12,8 @@ import { ActiveViewContext, ViewModelsContext } from '../contexts';
 import { AnyObject, Class, EmptyObject, Maybe } from '../utils/types';
 import { ViewModel, ViewModelCreateConfig } from '../view-model';
 
+declare const process: { env: { NODE_ENV?: string } };
+
 export type ViewModelProps<VM extends ViewModel<any>> = {
   model: VM;
 };

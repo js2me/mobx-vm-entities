@@ -11,6 +11,8 @@ import {
   ViewModelGenerateIdConfig,
 } from './view-model.store.types';
 
+declare const process: { env: { NODE_ENV?: string } };
+
 export abstract class AbstractViewModelStore implements ViewModelStore {
   viewModels = observable.map<string, ViewModel>();
   viewModelsByClasses = observable.map<string, string[]>();

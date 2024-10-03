@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-declare global {
-  const process: {
-    env: { NODE_ENV?: string };
-  };
-}
-
 export type ValueOf<T> = T[keyof T];
 
 export type ExtractEnumKeys<T> = ValueOf<{
