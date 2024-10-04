@@ -12,19 +12,16 @@ const writeFile = (file, content) => fs.writeFileSync(file, content);
 
 $(`cp -r LICENSE dist`);
 
-const exportsConfig = {
-  './package.json': './package.json',
-};
+const lookupExportsMap = (targetPath, exportsMap) => {
+  exportsMap = exportsMap || {};
 
-const deepScan = (p) => {
-  let targetPath = p;
-
-  const pathstat = lstatSync(p);
+  const pathstat = lstatSync(targetPath);
 
   if (pathstat.isDirectory()) {
-    const subdirs = scanDir(p);
+    const subdirs = scanDir(targetPath);
+
     subdirs.forEach((subdir) => {
-      deepScan(`${p}/${subdir}`);
+      lookupExportsMap(`${targetPath}/${subdir}`, exportsMap);
     });
   } else {
     const ext = path.extname(targetPath);
@@ -33,48 +30,40 @@ const deepScan = (p) => {
 
     if (ext === '.ts' || ext === '.tsx') {
       if (fixedPath === 'index') {
-        exportsConfig[`.`] = {
+        exportsMap[`.`] = {
           import: `./${fixedPath}.js`,
           types: `./${fixedPath}.d.ts`,
         };
       } else if (fixedPath.endsWith('/index')) {
-        exportsConfig[`${fixedPath.split('/').slice(0, -1).join('/')}`] = {
+        exportsMap[`${fixedPath.split('/').slice(0, -1).join('/')}`] = {
           import: `./${fixedPath}.js`,
           types: `./${fixedPath}.d.ts`,
         };
       } else {
-        exportsConfig[`${fixedPath}`] = {
+        exportsMap[`${fixedPath}`] = {
           import: `./${fixedPath}.js`,
           types: `./${fixedPath}.d.ts`,
         };
       }
     } else {
-      exportsConfig[`${fixedPath}`] = `./${fixedPath}${ext}`;
+      exportsMap[`${fixedPath}`] = `./${fixedPath}${ext}`;
     }
   }
+
+  return exportsMap;
 };
-
-deepScan('src');
-
-// scanDir('src').forEach((entityName) => {
-//   exportsConfig[`./${entityName}`] = {
-//     import: `./${entityName}/index.js`,
-//     types: `./${entityName}/index.d.ts`,
-//   };
-// });
 
 writeFile(
   'dist/package.json',
   JSON.stringify(
     {
       ...JSON.parse(readFile('package.json')),
-      exports: exportsConfig,
+      exports: {
+        './package.json': './package.json',
+        ...lookupExportsMap('src'),
+      },
     },
     null,
     2,
   ),
 );
-
-// execSync(`mkdir -p typings`, { stdio: 'inherit' });
-// execSync(`cp src/lib/types.ts typings/index.d.ts`, { stdio: 'inherit' });
-// execSync(`sed -i 's/^export type/type/' typings/index.d.ts`, { stdio: 'inherit' });
