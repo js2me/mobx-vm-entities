@@ -41,23 +41,20 @@ const lookupExportsMap = (targetPath, exportsMap) => {
       if (fixedPath === 'index') {
         exportsMap[`.`] = {
           import: `./${fixedPath}.js`,
-          types: `./${fixedPath}.d.ts`,
           default: `./${fixedPath}.js`,
-          require: `./${fixedPath}.js`,
+          types: `./${fixedPath}.d.ts`,
         };
       } else if (fixedPath.endsWith('/index')) {
         exportsMap[`./${fixedPath.split('/').slice(0, -1).join('/')}`] = {
           import: `./${fixedPath}.js`,
-          types: `./${fixedPath}.d.ts`,
           default: `./${fixedPath}.js`,
-          require: `./${fixedPath}.js`,
+          types: `./${fixedPath}.d.ts`,
         };
       } else {
         exportsMap[`./${fixedPath}`] = {
           import: `./${fixedPath}.js`,
-          types: `./${fixedPath}.d.ts`,
           default: `./${fixedPath}.js`,
-          require: `./${fixedPath}.js`,
+          types: `./${fixedPath}.d.ts`,
         };
       }
     } else {
@@ -79,6 +76,7 @@ writeFile(
       },
       main: './index.js',
       typings: './index.d.ts',
+      files: ['*'],
     },
     null,
     2,

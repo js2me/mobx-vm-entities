@@ -1,9 +1,6 @@
 {
   "name": "mobx-vm-entities",
-  "version": "2.0.8",
-  "files": [
-    "*"
-  ],
+  "version": "2.0.9",
   "scripts": {
     "clean": "rimraf dist",
 
