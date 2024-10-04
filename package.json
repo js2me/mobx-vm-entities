@@ -1,17 +1,20 @@
 {
   "name": "mobx-vm-entities",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "main": "index.js",
   "typings": "index.d.ts",
   "files": [
     "*"
   ],
   "scripts": {
-    "prebuild": "rimraf dist & eslint . --fix",
+    "clean": "rimraf dist",
+
+    "prebuild": "npm run clean && eslint . --fix",
     "build": "tsc",
-    "prepub": "pnpm run build && cp package.json dist && cp README.md dist && cp LICENSE dist",
+    "postbuild": "node ./post-build.mjs",
+    "prepub": "pnpm run build",
     "pub": "cd dist && npm publish",
-    "postpub": "rimraf dist"
+    "postpub": "npm run clean"
   },
   "keywords": [
     "mobx",
