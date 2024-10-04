@@ -28,6 +28,15 @@ const lookupExportsMap = (targetPath, exportsMap) => {
 
     const fixedPath = targetPath.replace(ext, '').replace('src/', '');
 
+    if (
+      fixedPath.endsWith('.store') ||
+      fixedPath.endsWith('.store.types') ||
+      fixedPath.endsWith('.types') ||
+      fixedPath.endsWith('.impl')
+    ) {
+      return;
+    }
+
     if (ext === '.ts' || ext === '.tsx') {
       if (fixedPath === 'index') {
         exportsMap[`.`] = {
