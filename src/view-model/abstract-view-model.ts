@@ -1,6 +1,6 @@
 import { Disposer, IDisposer } from 'disposer-util';
 import { isEqual } from 'lodash-es';
-import { action, observable } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 
 import { AnyObject, EmptyObject, Maybe } from '../utils/types';
 
@@ -16,27 +16,31 @@ export abstract class AbstractViewModel<
 
   id: string;
 
-  @observable.ref
-  accessor isMounted = false;
+  isMounted = false;
 
-  @observable.ref
-  public accessor payload: Payload;
+  public payload: Payload;
 
   constructor(private params: AbstractViewModelParams<Payload>) {
     this.id = params.id;
     this.payload = params.payload;
+
+    makeObservable(this, {
+      isMounted: observable.ref,
+      payload: observable.ref,
+      mount: action,
+      didMount: action,
+      unmount: action,
+      didUnmount: action,
+      setPayload: action,
+    });
   }
 
-  @action
   mount() {}
 
-  @action
   didMount() {}
 
-  @action
   unmount() {}
 
-  @action
   didUnmount() {
     this.dispose();
   }
@@ -48,7 +52,6 @@ export abstract class AbstractViewModel<
     return this.getParentViewModel(this.params.parentViewModelId);
   }
 
-  @action
   setPayload(payload: Payload) {
     if (!isEqual(this.payload, payload)) {
       this.payload = payload;

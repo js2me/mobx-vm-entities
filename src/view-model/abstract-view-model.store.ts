@@ -1,5 +1,11 @@
 import { last } from 'lodash-es';
-import { action, computed, observable, runInAction } from 'mobx';
+import {
+  action,
+  computed,
+  makeObservable,
+  observable,
+  runInAction,
+} from 'mobx';
 
 import { createLinearNumericIdGenerator, generateId } from '../utils';
 import { Class, Maybe } from '../utils/types';
@@ -29,9 +35,16 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
    */
   unmountingViews = observable.set<string>();
 
-  constructor() {}
+  constructor() {
+    makeObservable(this, {
+      mountedViewsCount: computed,
+      mount: action,
+      unmount: action,
+      attach: action,
+      detach: action,
+    });
+  }
 
-  @computed
   get mountedViewsCount() {
     return Array.from(this.instanceAttachedCount.values()).reduce(
       (sum, count) => sum + count,
@@ -97,7 +110,6 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     return (this.viewModels.get(id) as Maybe<T>) ?? null;
   }
 
-  @action
   async mount(model: ViewModel) {
     this.mountingViews.add(model.id);
 
@@ -110,7 +122,6 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     });
   }
 
-  @action
   async unmount(model: ViewModel) {
     this.unmountingViews.add(model.id);
 
@@ -123,7 +134,6 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     });
   }
 
-  @action
   async attach(model: ViewModel) {
     const attachedCount = this.instanceAttachedCount.get(model.id) || 0;
 
@@ -145,7 +155,6 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     await this.mount(model);
   }
 
-  @action
   async detach(id: string) {
     const attachedCount = this.instanceAttachedCount.get(id) || 0;
 
