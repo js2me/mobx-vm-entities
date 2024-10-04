@@ -24,8 +24,6 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src",
-    "post-build.mjs",
-    "./.eslintrc.cjs"
+    "src"
   ]
 }
