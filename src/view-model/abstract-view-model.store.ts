@@ -46,7 +46,7 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
   }
 
   get mountedViewsCount() {
-    return Array.from(this.instanceAttachedCount.values()).reduce(
+    return [...this.instanceAttachedCount.values()].reduce(
       (sum, count) => sum + count,
       0,
     );
@@ -71,10 +71,10 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
 
       const id = `${config.ctx.shortStaticId}_${config.ctx.generateNumericId()}`;
 
-      if (process.env.NODE_ENV !== 'production') {
-        return `${config.VM.name}_${id}`;
-      } else {
+      if (process.env.NODE_ENV === 'production') {
         return id;
+      } else {
+        return `${config.VM.name}_${id}`;
       }
     }
   }
@@ -135,7 +135,7 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
   }
 
   async attach(model: ViewModel) {
-    const attachedCount = this.instanceAttachedCount.get(model.id) || 0;
+    const attachedCount = this.instanceAttachedCount.get(model.id) ?? 0;
 
     this.instanceAttachedCount.set(model.id, attachedCount + 1);
 
@@ -156,7 +156,7 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
   }
 
   async detach(id: string) {
-    const attachedCount = this.instanceAttachedCount.get(id) || 0;
+    const attachedCount = this.instanceAttachedCount.get(id) ?? 0;
 
     const model = this.viewModels.get(id);
 

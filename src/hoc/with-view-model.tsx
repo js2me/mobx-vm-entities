@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-nested-functions */
 import { observer } from 'mobx-react-lite';
 import {
   ComponentType,
@@ -59,7 +60,7 @@ export function withViewModel(
   Model: Class<any>,
   config?: ViewModelHocConfig<any>,
 ) {
-  const ctx: AnyObject = config?.ctx ?? {};
+  const context: AnyObject = config?.ctx ?? {};
 
   return (Component: ComponentType<any>) => {
     const instances = new Map<string, ViewModel>();
@@ -77,7 +78,7 @@ export function withViewModel(
 
       if (!idRef.current) {
         idRef.current = viewModels.generateViewModelId({
-          ctx,
+          ctx: context,
           id: config?.id,
           VM: Model,
           parentViewModelId,
@@ -96,7 +97,7 @@ export function withViewModel(
           VM: Model,
           fallback: config?.fallback,
           instances,
-          ctx,
+          ctx: context,
         };
 
         const instance =

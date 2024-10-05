@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Disposer, IDisposer } from 'disposer-util';
 import { isEqual } from 'lodash-es';
 import { action, makeObservable, observable } from 'mobx';
@@ -35,23 +36,54 @@ export abstract class AbstractViewModel<
     });
   }
 
-  mount() {}
+  /**
+   * Метод вызывается когда вюшка начала примонтироваться
+   */
+  mount() {
+    /* Пустой метод, чтобы его переопределить */
+  }
 
-  didMount() {}
+  /**
+   * Метод вызывается когда вьюшка была примонтирована
+   */
+  didMount() {
+    /* Пустой метод, чтобы его переопределить */
+  }
 
-  unmount() {}
+  /**
+   * Метод вызывается когда вюшка запустила процесс размонтирования
+   */
+  unmount() {
+    /* Пустой метод, чтобы его переопределить */
+  }
 
+  /**
+   * Метод вызывается когда вюшка была размонтирована
+   */
   didUnmount() {
     this.dispose();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  payloadChanged(payload: Payload) {}
+  /**
+   * Метод вызывается когда пейлоад вью модели был изменён
+   *
+   * Состояние - "был изменён" определяется внутри setPayload метода
+   */
+  payloadChanged(payload: Payload) {
+    /* Пустой метод, чтобы его переопределить */
+  }
 
+  /**
+   * Возвращает родительскую вью модель
+   * Для работы этого поля необходим getParentViewModel метод
+   */
   get parentViewModel() {
     return this.getParentViewModel(this.params.parentViewModelId);
   }
 
+  /**
+   * Метод вызывается когда пейлоад меняется(ссылочно за счет useLayoutEffect) в реакте компоненте
+   */
   setPayload(payload: Payload) {
     if (!isEqual(this.payload, payload)) {
       this.payload = payload;
@@ -59,6 +91,9 @@ export abstract class AbstractViewModel<
     }
   }
 
+  /**
+   * Метод получения родительской вью модели
+   */
   protected abstract getParentViewModel(
     parentViewModelId: Maybe<string>,
   ): ParentViewModel | null;
