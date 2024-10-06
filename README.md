@@ -1,6 +1,3 @@
-[![npm](https://img.shields.io/npm/v/mobx-vm-entities)](https://www.npmjs.com/package/mobx-vm-entities) 
-[![license](https://img.shields.io/npm/l/mobx-vm-entities)](https://github.com/js2me/mobx-vm-entities/blob/master/LICENSE)  
-
 # mobx-vm-entities  
 
 ## Usage (with using `rootStore`)  
