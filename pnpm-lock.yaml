@@ -40,8 +40,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4(eslint@8.57.0)(prettier@3.3.3)(typescript@5.4.5)
       js2me-exports-post-build-script:
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 2.0.10
+        version: 2.0.10
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -749,6 +749,12 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@kwsites/file-exists@1.1.1':
+    resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
+
+  '@kwsites/promise-deferred@1.1.1':
+    resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
 
   '@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1':
     resolution: {integrity: sha512-54/JRvkLIzzDWshCWfuhadfrfZVPiElY8Fcgmg1HroEly/EDSszzhBAsarCux+D/kOslTRquNzuyGSmUSTTHGg==}
@@ -1702,8 +1708,8 @@ packages:
       eslint: ^8.57.0
       prettier: ^3.3.3
 
-  js2me-exports-post-build-script@1.0.0:
-    resolution: {integrity: sha512-yLB3i3K0Y2OezIuTr6NfEc/Lwoo0Zdi2lmJQtBK1mxhXCROa5qIMtlXHZbpnRYDfos0/GrK0w8ZeKHidOGtJqQ==}
+  js2me-exports-post-build-script@2.0.10:
+    resolution: {integrity: sha512-YdWvx768fWoxSoq/VgSus3ufSsuJEymusbvcBTF58qaf8NITvA3opZVnC7EdKQXRPxCCm8Js1g3FLdxBxcEhRA==}
 
   jsesc@0.5.0:
     resolution: {integrity: sha512-uZz5UnB7u4T9LvwmFqXii7pZSouaRPorGs5who1Ip7VO0wxanFvBL7GkM6dTHlgX+jhBApRetaWpnDabOeTcnA==}
@@ -2123,6 +2129,9 @@ packages:
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
+
+  simple-git@3.27.0:
+    resolution: {integrity: sha512-ivHoFS9Yi9GY49ogc6/YAi3Fl9ROnF4VyubNylgCkA+RVqLaKWnDSzXOVzya8csELIaWaYNutsEuAhZrtOjozA==}
 
   slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
@@ -3272,6 +3281,14 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@kwsites/file-exists@1.1.1':
+    dependencies:
+      debug: 4.3.7
+    transitivePeerDependencies:
+      - supports-color
+
+  '@kwsites/promise-deferred@1.1.1': {}
 
   '@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1':
     dependencies:
@@ -4500,7 +4517,11 @@ snapshots:
       - supports-color
       - typescript
 
-  js2me-exports-post-build-script@1.0.0: {}
+  js2me-exports-post-build-script@2.0.10:
+    dependencies:
+      simple-git: 3.27.0
+    transitivePeerDependencies:
+      - supports-color
 
   jsesc@0.5.0: {}
 
@@ -4908,6 +4929,14 @@ snapshots:
       object-inspect: 1.13.2
 
   signal-exit@4.1.0: {}
+
+  simple-git@3.27.0:
+    dependencies:
+      '@kwsites/file-exists': 1.1.1
+      '@kwsites/promise-deferred': 1.1.1
+      debug: 4.3.7
+    transitivePeerDependencies:
+      - supports-color
 
   slash@3.0.0: {}
 
