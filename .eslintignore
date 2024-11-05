@@ -16,3 +16,4 @@ jsconfig.json
 *.json
 .eslintrc.cjs
 post-build.mjs
+vitest.config.ts

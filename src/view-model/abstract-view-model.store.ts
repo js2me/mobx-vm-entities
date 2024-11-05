@@ -116,9 +116,7 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     await model.mount();
 
     runInAction(() => {
-      model.isMounted = true;
       this.mountingViews.delete(model.id);
-      model.didMount();
     });
   }
 
@@ -128,9 +126,7 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     await model.unmount();
 
     runInAction(() => {
-      model.isMounted = false;
       this.unmountingViews.delete(model.id);
-      model.didUnmount();
     });
   }
 

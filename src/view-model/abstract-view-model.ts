@@ -25,64 +25,70 @@ export abstract class AbstractViewModel<
     this.id = params.id;
     this.payload = params.payload;
 
+    console.info('fff');
+
     makeObservable(this, {
       isMounted: observable.ref,
       payload: observable.ref,
-      mount: action,
+      mount: action.bound,
       didMount: action,
-      unmount: action,
+      unmount: action.bound,
       didUnmount: action,
       setPayload: action,
     });
   }
 
   /**
-   * Метод вызывается когда вюшка начала примонтироваться
+   * The method is called when the view starts mounting
    */
   mount() {
-    /* Пустой метод, чтобы его переопределить */
+    this.isMounted = true;
+
+    this.didMount();
   }
 
   /**
-   * Метод вызывается когда вьюшка была примонтирована
+   * The method is called when the view was mounted
    */
   didMount() {
-    /* Пустой метод, чтобы его переопределить */
+    /* Empty method to be overridden */
   }
 
   /**
-   * Метод вызывается когда вюшка запустила процесс размонтирования
+   * The method is called when the view starts unmounting
    */
   unmount() {
-    /* Пустой метод, чтобы его переопределить */
+    this.isMounted = false;
+
+    this.didUnmount();
   }
 
   /**
-   * Метод вызывается когда вюшка была размонтирована
+   * The method is called when the view was unmounted
    */
   didUnmount() {
     this.dispose();
   }
 
   /**
-   * Метод вызывается когда пейлоад вью модели был изменён
+   * The method is called when the payload of the view model was changed
    *
-   * Состояние - "был изменён" определяется внутри setPayload метода
+   * The state - "was changed" is determined inside the setPayload method
    */
   payloadChanged(payload: Payload) {
-    /* Пустой метод, чтобы его переопределить */
+    /* Empty method to be overridden */
   }
 
   /**
-   * Возвращает родительскую вью модель
-   * Для работы этого поля необходим getParentViewModel метод
+   * Returns the parent view model
+   * For this property to work, the getParentViewModel method is required
    */
   get parentViewModel() {
     return this.getParentViewModel(this.params.parentViewModelId);
   }
 
   /**
-   * Метод вызывается когда пейлоад меняется(ссылочно за счет useLayoutEffect) в реакте компоненте
+   * The method is called when the payload changes (referentially due to useLayoutEffect) in the react component
    */
   setPayload(payload: Payload) {
     if (!isEqual(this.payload, payload)) {
@@ -92,7 +98,7 @@ export abstract class AbstractViewModel<
   }
 
   /**
-   * Метод получения родительской вью модели
+   * The method of getting the parent view model
    */
   protected abstract getParentViewModel(
     parentViewModelId: Maybe<string>,

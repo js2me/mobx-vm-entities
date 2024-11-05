@@ -9,4 +9,14 @@ module.exports = {
       { ignore: Object.keys(packageJson.peerDependencies) },
     ],
   },
+  overrides: [
+    {
+      files: [
+        "*.test.ts",
+      ],
+      parserOptions: {
+        project: 'tsconfig.test.json',
+      },
+    }
+  ]
 };

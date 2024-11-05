@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": [],
+    "types": ["vitest"],
     "target": "ESNext",
     "outDir": "dist",
     "declaration": true,
@@ -24,9 +24,7 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
-  ],
-  "exclude": [
     "src/**/*.test.ts"
-  ]
+  ],
+  "exclude": []
 }

@@ -3,12 +3,14 @@
   "version": "2.0.14",
   "scripts": {
     "clean": "rimraf dist",
-    "check": "eslint . --fix",
+    "check": "eslint . --fix && pnpm test",
     "prebuild": "npm run clean && npm run check",
     "build": "tsc && node ./post-build.mjs",
     "pub:patch": "PUBLISH=true PUBLISH_VERSION=patch pnpm run build",
     "pub:minor": "PUBLISH=true PUBLISH_VERSION=minor pnpm run build",
-    "pub:major": "PUBLISH=true PUBLISH_VERSION=major pnpm run build"
+    "pub:major": "PUBLISH=true PUBLISH_VERSION=major pnpm run build",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
   },
   "keywords": [
     "mobx",
@@ -40,10 +42,11 @@
     "@types/node": "20.14.5",
     "@types/react": "^18.3.3",
     "eslint": "8.57.0",
-    "js2me-exports-post-build-script": "2.0.10",
     "js2me-eslint-config": "1.0.4",
+    "js2me-exports-post-build-script": "2.0.10",
     "rimraf": "6.0.1",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "vitest": "2.1.4"
   },
   "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
 }
