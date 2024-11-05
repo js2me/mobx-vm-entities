@@ -25,8 +25,6 @@ export abstract class AbstractViewModel<
     this.id = params.id;
     this.payload = params.payload;
 
-    console.info('fff');
-
     makeObservable(this, {
       isMounted: observable.ref,
       payload: observable.ref,

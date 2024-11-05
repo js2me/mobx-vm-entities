@@ -19,8 +19,11 @@ import {
 
 declare const process: { env: { NODE_ENV?: string } };
 
-export abstract class AbstractViewModelStore implements ViewModelStore {
-  viewModels = observable.map<string, ViewModel>();
+export abstract class AbstractViewModelStore<
+  VMBase extends ViewModel<any> = ViewModel<any>,
+> implements ViewModelStore<VMBase>
+{
+  viewModels = observable.map<string, VMBase>();
   viewModelsByClasses = observable.map<string, string[]>();
 
   instanceAttachedCount = new Map<string, number>();
@@ -52,11 +55,11 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     );
   }
 
-  abstract createViewModel<VM extends ViewModel<any>>(
+  abstract createViewModel<VM extends VMBase>(
     config: ViewModelCreateConfig<VM>,
   ): VM;
 
-  generateViewModelId<VM extends ViewModel<any>>(
+  generateViewModelId<VM extends VMBase>(
     config: ViewModelGenerateIdConfig<VM>,
   ): string {
     if (config.id) {
@@ -79,9 +82,7 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     }
   }
 
-  getId<T extends ViewModel>(
-    idOrClass: Maybe<string | Class<T>>,
-  ): string | null {
+  getId<T extends VMBase>(idOrClass: Maybe<string | Class<T>>): string | null {
     if (!idOrClass) return null;
 
     const id =
@@ -94,7 +95,7 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     return id;
   }
 
-  has<T extends ViewModel>(idOrClass: Maybe<string | Class<T>>): boolean {
+  has<T extends VMBase>(idOrClass: Maybe<string | Class<T>>): boolean {
     const id = this.getId(idOrClass);
 
     if (!id) return false;
@@ -102,7 +103,7 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     return this.viewModels.has(id);
   }
 
-  get<T extends ViewModel>(idOrClass: Maybe<string | Class<T>>): T | null {
+  get<T extends VMBase>(idOrClass: Maybe<string | Class<T>>): T | null {
     const id = this.getId(idOrClass);
 
     if (!id) return null;
@@ -110,7 +111,7 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     return (this.viewModels.get(id) as Maybe<T>) ?? null;
   }
 
-  async mount(model: ViewModel) {
+  async mount(model: VMBase) {
     this.mountingViews.add(model.id);
 
     await model.mount();
@@ -120,7 +121,7 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     });
   }
 
-  async unmount(model: ViewModel) {
+  async unmount(model: VMBase) {
     this.unmountingViews.add(model.id);
 
     await model.unmount();
@@ -130,7 +131,7 @@ export abstract class AbstractViewModelStore implements ViewModelStore {
     });
   }
 
-  async attach(model: ViewModel) {
+  async attach(model: VMBase) {
     const attachedCount = this.instanceAttachedCount.get(model.id) ?? 0;
 
     this.instanceAttachedCount.set(model.id, attachedCount + 1);
