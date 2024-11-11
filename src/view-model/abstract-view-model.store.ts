@@ -29,7 +29,7 @@ export abstract class AbstractViewModelStore<
   instanceAttachedCount = new Map<string, number>();
 
   /**
-   * Вьюшки, ожидающие загрузки
+   * Views waiting for loading
    */
   mountingViews = observable.set<string>();
 

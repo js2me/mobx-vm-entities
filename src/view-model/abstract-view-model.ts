@@ -13,6 +13,9 @@ export abstract class AbstractViewModel<
   ParentViewModel extends ViewModel<any> = ViewModel<any>,
 > implements ViewModel<Payload>
 {
+  private abortController: AbortController;
+
+  protected abortSignal: AbortSignal;
   protected disposer: IDisposer = new Disposer();
 
   id: string;
@@ -24,6 +27,12 @@ export abstract class AbstractViewModel<
   constructor(private params: AbstractViewModelParams<Payload>) {
     this.id = params.id;
     this.payload = params.payload;
+    this.abortController = new AbortController();
+    this.abortSignal = this.abortController.signal;
+
+    this.abortSignal.addEventListener('abort', () => {
+      this.disposer.dispose();
+    });
 
     makeObservable(this, {
       isMounted: observable.ref,
@@ -103,6 +112,6 @@ export abstract class AbstractViewModel<
   ): ParentViewModel | null;
 
   dispose() {
-    this.disposer.dispose();
+    this.abortController.abort();
   }
 }

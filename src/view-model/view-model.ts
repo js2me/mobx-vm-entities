@@ -1,5 +1,3 @@
-import { Disposable } from 'disposer-util';
-
 import { AnyObject, Class, EmptyObject } from '../utils/types';
 
 import type { AbstractViewModel } from './abstract-view-model';
@@ -11,7 +9,7 @@ import type { AbstractViewModel } from './abstract-view-model';
 export interface ViewModel<
   Payload extends AnyObject = EmptyObject,
   ParentViewModel extends ViewModel<any> = ViewModel<any, any>,
-> extends Disposable {
+> {
   /**
    * The unique identifier for the view model.
    */
@@ -76,6 +74,11 @@ export interface ViewModel<
    * This method is called with the new payload and should update the view model according to the new payload.
    */
   payloadChanged(payload: Payload): void;
+
+  /**
+   * @deprecated use {didUnmount} instead
+   */
+  dispose(): void;
 }
 
 export type ViewModelClass<T extends ViewModel<any> = ViewModel<any>> = Class<
