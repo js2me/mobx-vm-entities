@@ -15,7 +15,7 @@ export abstract class AbstractViewModel<
 {
   private abortController: AbortController;
 
-  protected abortSignal: AbortSignal;
+  protected unmountSignal: AbortSignal;
   protected disposer: IDisposer = new Disposer();
 
   id: string;
@@ -28,9 +28,10 @@ export abstract class AbstractViewModel<
     this.id = params.id;
     this.payload = params.payload;
     this.abortController = new AbortController();
-    this.abortSignal = this.abortController.signal;
 
-    this.abortSignal.addEventListener('abort', () => {
+    this.unmountSignal = this.abortController.signal;
+
+    this.unmountSignal.addEventListener('abort', () => {
       this.disposer.dispose();
     });
 
@@ -74,6 +75,7 @@ export abstract class AbstractViewModel<
    * The method is called when the view was unmounted
    */
   didUnmount() {
+    // eslint-disable-next-line sonarjs/deprecation
     this.dispose();
   }
 
@@ -111,6 +113,9 @@ export abstract class AbstractViewModel<
     parentViewModelId: Maybe<string>,
   ): ParentViewModel | null;
 
+  /**
+   * @deprecated use {didUnmount} instead
+   */
   dispose() {
     this.abortController.abort();
   }

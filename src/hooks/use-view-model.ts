@@ -12,7 +12,7 @@ export const useViewModel = <T extends ViewModel<any>>(
   const model = viewModels.get<T>(idOrClass ?? activeViewId);
 
   if (!model) {
-    throw new Error('Нет модели для представления');
+    throw new Error('No model for view');
   }
 
   return model;
