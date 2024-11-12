@@ -16,6 +16,9 @@ export abstract class AbstractViewModel<
   private abortController: AbortController;
 
   protected unmountSignal: AbortSignal;
+  /**
+   * @deprecated use {unmountSignal} instead
+   */
   protected disposer: IDisposer = new Disposer();
 
   id: string;
@@ -28,10 +31,10 @@ export abstract class AbstractViewModel<
     this.id = params.id;
     this.payload = params.payload;
     this.abortController = new AbortController();
-
     this.unmountSignal = this.abortController.signal;
 
     this.unmountSignal.addEventListener('abort', () => {
+      // eslint-disable-next-line sonarjs/deprecation
       this.disposer.dispose();
     });
 
