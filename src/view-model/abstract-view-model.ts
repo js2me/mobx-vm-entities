@@ -15,7 +15,7 @@ export abstract class AbstractViewModel<
 {
   private abortController: AbortController;
 
-  protected unmountSignal: AbortSignal;
+  public unmountSignal: AbortSignal;
   /**
    * @deprecated use {unmountSignal} instead
    */
