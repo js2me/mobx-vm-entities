@@ -6,6 +6,7 @@
     "check": "eslint . --fix && pnpm test",
     "prebuild": "npm run clean && npm run check",
     "build": "tsc && node ./post-build.mjs",
+    "pub": "PUBLISH=true pnpm run build",
     "pub:patch": "PUBLISH=true PUBLISH_VERSION=patch pnpm run build",
     "pub:minor": "PUBLISH=true PUBLISH_VERSION=minor pnpm run build",
     "pub:major": "PUBLISH=true PUBLISH_VERSION=major pnpm run build",
@@ -43,7 +44,7 @@
     "@types/react": "^18.3.3",
     "eslint": "8.57.0",
     "js2me-eslint-config": "1.0.4",
-    "js2me-exports-post-build-script": "2.0.10",
+    "js2me-exports-post-build-script": "2.0.13",
     "rimraf": "6.0.1",
     "typescript": "5.4.5",
     "vitest": "2.1.4"

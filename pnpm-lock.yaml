@@ -40,8 +40,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4(eslint@8.57.0)(prettier@3.3.3)(typescript@5.4.5)
       js2me-exports-post-build-script:
-        specifier: 2.0.10
-        version: 2.0.10
+        specifier: 2.0.13
+        version: 2.0.13
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -2008,8 +2008,8 @@ packages:
       eslint: ^8.57.0
       prettier: ^3.3.3
 
-  js2me-exports-post-build-script@2.0.10:
-    resolution: {integrity: sha512-YdWvx768fWoxSoq/VgSus3ufSsuJEymusbvcBTF58qaf8NITvA3opZVnC7EdKQXRPxCCm8Js1g3FLdxBxcEhRA==}
+  js2me-exports-post-build-script@2.0.13:
+    resolution: {integrity: sha512-Sv8S3OAJGMGBDwPs4rGrwKyRl/0LU9WbLdcjyn2A93Oq0JJGxN8rbcYfElUEE/QAPi1i3SQvI9UMQYMtQwn6Ug==}
 
   jsesc@0.5.0:
     resolution: {integrity: sha512-uZz5UnB7u4T9LvwmFqXii7pZSouaRPorGs5who1Ip7VO0wxanFvBL7GkM6dTHlgX+jhBApRetaWpnDabOeTcnA==}
@@ -5157,7 +5157,7 @@ snapshots:
       - supports-color
       - typescript
 
-  js2me-exports-post-build-script@2.0.10:
+  js2me-exports-post-build-script@2.0.13:
     dependencies:
       simple-git: 3.27.0
     transitivePeerDependencies:

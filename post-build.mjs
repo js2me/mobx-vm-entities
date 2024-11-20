@@ -6,11 +6,11 @@ postBuildScript({
   srcDirName: 'src',
   filesToCopy: ['LICENSE', 'README.md'],
   updateVersion: process.env.PUBLISH_VERSION,
-  onPackageVersionChanged: (nextVersion, currVersion) => {
+  onDone: (versionsDiff, _, packageJson) => {
     if (process.env.PUBLISH) {
       publishScript({
-        nextVersion,
-        currVersion,
+        nextVersion: versionsDiff?.next ?? packageJson.version,
+        currVersion: versionsDiff?.current,
         publishCommand: 'pnpm publish',
         commitAllCurrentChanges: true,
         createTag: true,
