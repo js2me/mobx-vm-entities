@@ -143,6 +143,10 @@ export function withViewModel(
       });
     }
 
+    Object.assign(ConnectedViewModel, {
+      withViewModel: true,
+    });
+
     return ConnectedViewModel;
   };
 }
