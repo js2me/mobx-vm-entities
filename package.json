@@ -30,7 +30,8 @@
     "url": "git://github.com/js2me/mobx-vm-entities"
   },
   "dependencies": {
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "react-simple-loadable": "^1.0.0"
   },
   "peerDependencies": {
     "disposer-util": "^1.0.9",

@@ -23,6 +23,9 @@ importers:
       react:
         specifier: '>=18.3.1'
         version: 18.3.1
+      react-simple-loadable:
+        specifier: ^1.0.0
+        version: 1.0.0(react@18.3.1)
     devDependencies:
       '@types/lodash-es':
         specifier: ^4.17.12
@@ -2153,6 +2156,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@5.0.8:
+    resolution: {integrity: sha512-TcJPw+9RV9dibz1hHUzlLVy8N4X9TnwirAjrU08Juo6BNKggzVfP2ZJ/3ZUSq15Xl5i85i+Z89XBO90pB2PghQ==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -2310,6 +2318,11 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  react-simple-loadable@1.0.0:
+    resolution: {integrity: sha512-mN1T5f9d3m2TBkCmY/BiNY0kf573jDfAHRBJAttT5RPG4n9/bmF9dq6XWGAm3zgOzeMyJYujRSGSRO957RbMyQ==}
+    peerDependencies:
+      react: <19
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
@@ -2788,6 +2801,9 @@ packages:
 
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
+
+  yammies@2.0.10:
+    resolution: {integrity: sha512-cO2ByV6tuhFNLRftUBH+uVxg7mvK7aEtXCvrAb9wSQ7fPi1c1XmHH0t10qJ1LPztNMxe+j8E//OwOuRXeQMJBg==}
 
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
@@ -5274,6 +5290,8 @@ snapshots:
 
   nanoid@3.3.7: {}
 
+  nanoid@5.0.8: {}
+
   natural-compare@1.4.0: {}
 
   node-releases@2.0.18: {}
@@ -5424,6 +5442,11 @@ snapshots:
   queue-microtask@1.2.3: {}
 
   react-is@16.13.1: {}
+
+  react-simple-loadable@1.0.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      yammies: 2.0.10
 
   react@18.3.1:
     dependencies:
@@ -5989,5 +6012,9 @@ snapshots:
   wrappy@1.0.2: {}
 
   yallist@3.1.1: {}
+
+  yammies@2.0.10:
+    dependencies:
+      nanoid: 5.0.8
 
   yocto-queue@0.1.0: {}
