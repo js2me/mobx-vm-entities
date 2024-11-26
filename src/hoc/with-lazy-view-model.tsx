@@ -1,12 +1,12 @@
-import { ComponentProps, ComponentType, ReactNode } from 'react';
+import { ComponentProps, ComponentType } from 'react';
 import { loadable } from 'react-simple-loadable';
 
 import { Class } from '../utils/types';
 import { AnyViewModel } from '../view-model';
 
 import {
+  ComponentWithViewModel,
   ViewModelHocConfig,
-  ViewModelInputProps,
   withViewModel,
 } from './with-view-model';
 
@@ -28,8 +28,8 @@ export function withLazyViewModel<
   return loadable(async () => {
     const { Model, View } = await loadFunction();
     return withViewModel(Model, config)(View);
-  }, config?.fallback) as unknown as (
-    props: Omit<ComponentProps<TView>, 'model'> &
-      ViewModelInputProps<TViewModel>,
-  ) => ReactNode;
+  }, config?.fallback) as unknown as ComponentWithViewModel<
+    TViewModel,
+    ComponentProps<TView>
+  >;
 }
