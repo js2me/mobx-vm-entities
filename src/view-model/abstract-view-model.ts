@@ -28,7 +28,9 @@ export abstract class AbstractViewModel<
 
   public payload: Payload;
 
-  constructor(private params: AbstractViewModelParams<Payload>) {
+  constructor(
+    protected params: AbstractViewModelParams<Payload, ParentViewModel>,
+  ) {
     this.id = params.id;
     this.payload = params.payload;
     this.abortController = new AbortController();

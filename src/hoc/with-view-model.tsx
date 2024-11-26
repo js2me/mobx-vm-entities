@@ -2,7 +2,6 @@
 import { observer } from 'mobx-react-lite';
 import {
   ComponentType,
-  ReactNode,
   useContext,
   useEffect,
   useLayoutEffect,
@@ -49,12 +48,19 @@ export type ViewModelHocConfig<VM extends AnyViewModel> = {
   factory?: (config: ViewModelCreateConfig<VM>) => VM;
 };
 
-export function withViewModel<VM extends AnyViewModel>(
-  model: Class<VM>,
-  config?: ViewModelHocConfig<VM>,
-): <Props extends AnyObject = ViewModelProps<VM>>(
-  Component: ComponentType<Props & ViewModelProps<VM>>,
-) => (props: Omit<Props, 'model'> & ViewModelInputProps<VM>) => ReactNode;
+export type ComponentWithViewModel<
+  TViewModel extends AnyViewModel,
+  TComponentOriginProps extends AnyObject = ViewModelProps<TViewModel>,
+> = (
+  props: Omit<TComponentOriginProps, 'model'> & ViewModelInputProps<TViewModel>,
+) => TViewModel;
+
+export function withViewModel<TViewModel extends AnyViewModel>(
+  model: Class<TViewModel>,
+  config?: ViewModelHocConfig<TViewModel>,
+): <TComponentOriginProps extends AnyObject = ViewModelProps<TViewModel>>(
+  Component: ComponentType<TComponentOriginProps & ViewModelProps<TViewModel>>,
+) => ComponentWithViewModel<TViewModel, TComponentOriginProps>;
 
 export function withViewModel(
   Model: Class<any>,
@@ -63,7 +69,7 @@ export function withViewModel(
   const context: AnyObject = config?.ctx ?? {};
 
   return (Component: ComponentType<any>) => {
-    const instances = new Map<string, ViewModel>();
+    const instances = new Map<string, AnyViewModel>();
 
     const ConnectedViewModel = observer((allProps: any) => {
       const { payload: rawPayload, ...componentProps } = allProps;
@@ -95,6 +101,8 @@ export function withViewModel(
           parentViewModelId,
           payload,
           VM: Model,
+          parentViewModel:
+            (parentViewModelId && instances.get(parentViewModelId)) || null,
           fallback: config?.fallback,
           instances,
           ctx: context,
