@@ -2,6 +2,7 @@
 import { observer } from 'mobx-react-lite';
 import {
   ComponentType,
+  ReactNode,
   useContext,
   useEffect,
   useLayoutEffect,
@@ -53,7 +54,7 @@ export type ComponentWithViewModel<
   TComponentOriginProps extends AnyObject = ViewModelProps<TViewModel>,
 > = (
   props: Omit<TComponentOriginProps, 'model'> & ViewModelInputProps<TViewModel>,
-) => TViewModel;
+) => ReactNode;
 
 export function withViewModel<TViewModel extends AnyViewModel>(
   model: Class<TViewModel>,
