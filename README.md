@@ -19,7 +19,7 @@ import {
 
 export class ViewModelImpl<
     Payload extends AnyObject = EmptyObject,
-    ParentViewModel extends ViewModel<any> | null = null,
+    ParentViewModel extends ViewModel<any, any> | null = null,
   >
   extends AbstractViewModel<Payload, ParentViewModel>
   implements ViewModel<Payload, ParentViewModel>

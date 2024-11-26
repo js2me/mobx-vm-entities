@@ -8,7 +8,7 @@ import { ViewModel } from './view-model';
 
 export class TestViewModelImpl<
   Payload extends AnyObject = EmptyObject,
-  ParentViewModel extends ViewModel<any> | null = null,
+  ParentViewModel extends ViewModel<any, any> | null = null,
 > extends AbstractViewModel<Payload, ParentViewModel> {
   spies = {
     mount: vi.fn(),

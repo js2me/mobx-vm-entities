@@ -8,7 +8,7 @@ import type { AbstractViewModel } from './abstract-view-model';
  */
 export interface ViewModel<
   Payload extends AnyObject = EmptyObject,
-  ParentViewModel extends ViewModel<any> | null = null,
+  ParentViewModel extends ViewModel<any, any> | null = null,
 > {
   /**
    * The unique identifier for the view model.
