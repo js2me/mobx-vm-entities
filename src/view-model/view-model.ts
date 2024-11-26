@@ -8,7 +8,7 @@ import type { AbstractViewModel } from './abstract-view-model';
  */
 export interface ViewModel<
   Payload extends AnyObject = EmptyObject,
-  ParentViewModel extends ViewModel<any> = ViewModel<any, any>,
+  ParentViewModel extends ViewModel<any> | null = null,
 > {
   /**
    * The unique identifier for the view model.
@@ -33,7 +33,7 @@ export interface ViewModel<
    * Parent view model is the one that is above the current view model in the tree of view models.
    * Parent view model is determined by the getParentViewModel() method.
    */
-  readonly parentViewModel: ParentViewModel | null;
+  readonly parentViewModel: ParentViewModel;
 
   /**
    * The method that is called when the view model is mounted.

@@ -10,8 +10,8 @@ import { ViewModel } from './view-model';
 
 export abstract class AbstractViewModel<
   Payload extends AnyObject = EmptyObject,
-  ParentViewModel extends ViewModel<any> = ViewModel<any>,
-> implements ViewModel<Payload>
+  ParentViewModel extends ViewModel<any> | null = null,
+> implements ViewModel<Payload, ParentViewModel>
 {
   private abortController: AbortController;
 
@@ -114,7 +114,7 @@ export abstract class AbstractViewModel<
    */
   protected abstract getParentViewModel(
     parentViewModelId: Maybe<string>,
-  ): ParentViewModel | null;
+  ): ParentViewModel;
 
   /**
    * @deprecated use {didUnmount} instead
