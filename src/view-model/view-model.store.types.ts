@@ -3,8 +3,9 @@ import { ComponentType } from 'react';
 import { AnyObject, Class, Maybe } from '../utils/types';
 
 import { ViewModel } from './view-model';
+import { AnyViewModel } from './view-model.types';
 
-export interface ViewModelGenerateIdConfig<VM extends ViewModel<any>> {
+export interface ViewModelGenerateIdConfig<VM extends AnyViewModel> {
   VM: Class<VM>;
   id: Maybe<string>;
   ctx: AnyObject;
@@ -13,7 +14,7 @@ export interface ViewModelGenerateIdConfig<VM extends ViewModel<any>> {
   instances: Map<string, ViewModel>;
 }
 
-export interface ViewModelCreateConfig<VM extends ViewModel<any>> {
+export interface ViewModelCreateConfig<VM extends AnyViewModel> {
   VM: Class<VM>;
   payload: VM['payload'];
   id: string;

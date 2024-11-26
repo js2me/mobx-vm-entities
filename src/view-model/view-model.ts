@@ -1,6 +1,7 @@
 import { AnyObject, Class, EmptyObject } from '../utils/types';
 
 import type { AbstractViewModel } from './abstract-view-model';
+import { AnyViewModel } from './view-model.types';
 
 /**
  * The main interface for all view models.
@@ -8,7 +9,7 @@ import type { AbstractViewModel } from './abstract-view-model';
  */
 export interface ViewModel<
   Payload extends AnyObject = EmptyObject,
-  ParentViewModel extends ViewModel<any, any> | null = null,
+  ParentViewModel extends AnyViewModel | null = null,
 > {
   /**
    * The unique identifier for the view model.
@@ -81,7 +82,7 @@ export interface ViewModel<
   dispose(): void;
 }
 
-export type ViewModelClass<T extends ViewModel<any> = ViewModel<any>> = Class<
+export type ViewModelClass<T extends AnyViewModel = AnyViewModel> = Class<
   T,
   ConstructorParameters<typeof AbstractViewModel<T['payload']>>
 >;

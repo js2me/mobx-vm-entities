@@ -11,18 +11,18 @@ import {
 
 import { ActiveViewContext, ViewModelsContext } from '../contexts';
 import { AnyObject, Class, EmptyObject, Maybe } from '../utils/types';
-import { ViewModel, ViewModelCreateConfig } from '../view-model';
+import { AnyViewModel, ViewModel, ViewModelCreateConfig } from '../view-model';
 
 declare const process: { env: { NODE_ENV?: string } };
 
-export type ViewModelProps<VM extends ViewModel<any>> = {
+export type ViewModelProps<VM extends AnyViewModel> = {
   model: VM;
 };
 
-export type ViewModelInputProps<VM extends ViewModel<any>> =
+export type ViewModelInputProps<VM extends AnyViewModel> =
   VM['payload'] extends EmptyObject ? AnyObject : { payload: VM['payload'] };
 
-export type ViewModelHocConfig<VM extends ViewModel<any>> = {
+export type ViewModelHocConfig<VM extends AnyViewModel> = {
   /**
    * Уникальный идентификатор вьюшки
    */
@@ -49,7 +49,7 @@ export type ViewModelHocConfig<VM extends ViewModel<any>> = {
   factory?: (config: ViewModelCreateConfig<VM>) => VM;
 };
 
-export function withViewModel<VM extends ViewModel<any>>(
+export function withViewModel<VM extends AnyViewModel>(
   model: Class<VM>,
   config?: ViewModelHocConfig<VM>,
 ): <Props extends AnyObject = ViewModelProps<VM>>(

@@ -2,17 +2,17 @@ import { Disposable } from 'disposer-util';
 
 import { Class, Maybe } from '../utils/types';
 
-import { ViewModel } from './view-model';
 import {
   ViewModelCreateConfig,
   ViewModelGenerateIdConfig,
 } from './view-model.store.types';
+import { AnyViewModel } from './view-model.types';
 
 /**
  * Interface representing a store for managing view models.
  * It extends the Disposable interface, allowing for cleanup of resources.
  */
-export interface ViewModelStore<VMBase extends ViewModel<any> = ViewModel<any>>
+export interface ViewModelStore<VMBase extends AnyViewModel = AnyViewModel>
   extends Disposable {
   /**
    * Retrieves the ID of a view model based on a given ID or class type.

@@ -7,10 +7,11 @@ import { AnyObject, EmptyObject, Maybe } from '../utils/types';
 
 import { AbstractViewModelParams } from './abstract-view-model.types';
 import { ViewModel } from './view-model';
+import { AnyViewModel } from './view-model.types';
 
 export abstract class AbstractViewModel<
   Payload extends AnyObject = EmptyObject,
-  ParentViewModel extends ViewModel<any, any> | null = null,
+  ParentViewModel extends AnyViewModel | null = null,
 > implements ViewModel<Payload, ParentViewModel>
 {
   private abortController: AbortController;

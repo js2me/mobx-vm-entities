@@ -10,17 +10,17 @@ import {
 import { createLinearNumericIdGenerator, generateId } from '../utils';
 import { Class, Maybe } from '../utils/types';
 
-import { ViewModel } from './view-model';
 import { ViewModelStore } from './view-model.store';
 import {
   ViewModelCreateConfig,
   ViewModelGenerateIdConfig,
 } from './view-model.store.types';
+import { AnyViewModel } from './view-model.types';
 
 declare const process: { env: { NODE_ENV?: string } };
 
 export abstract class AbstractViewModelStore<
-  VMBase extends ViewModel<any> = ViewModel<any>,
+  VMBase extends AnyViewModel = AnyViewModel,
 > implements ViewModelStore<VMBase>
 {
   viewModels = observable.map<string, VMBase>();

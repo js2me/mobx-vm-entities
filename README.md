@@ -15,11 +15,12 @@ import {
   AbstractViewModel,
   AbstractViewModelParams,
   ViewModel,
+  AnyViewModel,
 } from 'mobx-vm-entities';
 
 export class ViewModelImpl<
     Payload extends AnyObject = EmptyObject,
-    ParentViewModel extends ViewModel<any, any> | null = null,
+    ParentViewModel extends AnyViewModel | null = null,
   >
   extends AbstractViewModel<Payload, ParentViewModel>
   implements ViewModel<Payload, ParentViewModel>
@@ -52,6 +53,7 @@ import {
   ViewModel,
   ViewModelCreateConfig,
   ViewModelStore,
+  AnyViewModel,
 } from 'mobx-vm-entities';
 
 export class ViewModelStoreImpl
@@ -62,7 +64,7 @@ export class ViewModelStoreImpl
     super();
   }
 
-  create<VM extends ViewModel<any, ViewModel<any, any>>>(
+  create<VM extends AnyViewModel>(
     config: ViewModelCreateConfig<VM>,
   ): VM {
     const VM = config.VM;

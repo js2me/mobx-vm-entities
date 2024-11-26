@@ -4,3 +4,4 @@ export * from './abstract-view-model.types';
 export * from './view-model.store';
 export * from './abstract-view-model.store';
 export * from './view-model.store.types';
+export * from './view-model.types';

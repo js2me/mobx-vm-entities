@@ -2,7 +2,7 @@ import { ComponentProps, ComponentType, ReactNode } from 'react';
 import { loadable } from 'react-simple-loadable';
 
 import { Class } from '../utils/types';
-import { ViewModel } from '../view-model';
+import { AnyViewModel } from '../view-model';
 
 import {
   ViewModelHocConfig,
@@ -11,7 +11,7 @@ import {
 } from './with-view-model';
 
 interface LazyViewAndModel<
-  TViewModel extends ViewModel<any>,
+  TViewModel extends AnyViewModel,
   TView extends ComponentType<any>,
 > {
   Model: Class<TViewModel>;
@@ -19,7 +19,7 @@ interface LazyViewAndModel<
 }
 
 export function withLazyViewModel<
-  TViewModel extends ViewModel<any>,
+  TViewModel extends AnyViewModel,
   TView extends ComponentType<any>,
 >(
   loadFunction: () => Promise<LazyViewAndModel<TViewModel, TView>>,

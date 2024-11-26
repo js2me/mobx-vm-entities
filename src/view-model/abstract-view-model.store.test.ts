@@ -11,6 +11,7 @@ import {
   ViewModelCreateConfig,
   ViewModelGenerateIdConfig,
 } from './view-model.store.types';
+import { AnyViewModel } from './view-model.types';
 
 export class TestViewModelStoreImpl extends AbstractViewModelStore {
   spies = {
@@ -64,7 +65,7 @@ describe('AbstractViewModelStore', () => {
   it('accessing to parent view models using store', async () => {
     class TestViewModelImpl1<
       Payload extends AnyObject = EmptyObject,
-      ParentViewModel extends ViewModel<any> | null = null,
+      ParentViewModel extends AnyViewModel | null = null,
     > extends TestViewModelImpl<Payload, ParentViewModel> {
       constructor(
         private vmStore: ViewModelStore,
