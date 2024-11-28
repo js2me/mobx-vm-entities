@@ -1,26 +1,83 @@
-# mobx-vm-entities  
+# mobx-vm-entities   
 
-## Usage (with using `rootStore`)  
+MobX ViewModel power for ReactJS  
 
+## Simple usage  
 
-### 1. Create `ViewModelImpl` class  
+```tsx
+import { ViewModelProps, ViewModelImpl, withViewModel } from 'mobx-vm-entities';
+export class MyPageVM extends ViewModelImpl {
+  @observable
+  accessor state = '';
 
-This class you will needed for creating your own view model classes  
-You can implement your own solution based on `ViewModel<Payload, ParentViewModel>`, but `AbstractViewModel` has a lot of ready solutions like `mount()`, or `payloadChanged()`  
-Only one thing that you should implement is the `getParentViewModel` and `constructor` because it requires (in most cases) `RootStore`  
+  mount() {
+    super.mount();
+  }
 
+  didMount() {
+    console.info('did mount');
+  }
 
-```tsx  
+  unmount() {
+    super.unmount();
+  }
+}
+
+const MyPageView = observer(({ model }: ViewModelProps<MyPageVM>) => {
+  return <div>{model.state}</div>;
+});
+
+export const MyPage = withViewModel(MyPageVM)(MyPageView);
+```
+
+## Detailed Configuration  
+
+### Make your own ViewModelStore implementation   
+
+`view-model.store.impl.ts`  
+```ts
 import {
-  AbstractViewModel,
   AbstractViewModelParams,
+  AbstractViewModelStore,
   ViewModel,
-  AnyViewModel,
+  ViewModelCreateConfig,
 } from 'mobx-vm-entities';
+
+export class ViewModelStoreImpl extends AbstractViewModelStore {
+  constructor(protected rootStore: RootStore) {
+    super();
+  }
+
+  createViewModel<VM extends ViewModel<any, ViewModel<any, any>>>(
+    config: ViewModelCreateConfig<VM>,
+  ): VM {
+    const VM = config.VM;
+    // here is you sending rootStore as first argument into VM (your view model implementation)
+    return new VM(this.rootStore, config);
+  }
+}
+```
+
+### Make your own `ViewModel` implementation with sharing `RootStore`   
+
+`view-model.ts`  
+```ts
+import { ViewModel as ViewModelBase } from 'mobx-vm-entities';
+
+export interface ViewModel<
+  Payload extends AnyObject = EmptyObject,
+  ParentViewModel extends ViewModel<any> = ViewModel<any, any>,
+> extends ViewModelBase<Payload, ParentViewModel> {}
+```
+
+`view-model.impl.ts`  
+```ts
+import { AbstractViewModel, AbstractViewModelParams } from 'mobx-vm-entities';
+import { ViewModel } from './view-model';
 
 export class ViewModelImpl<
     Payload extends AnyObject = EmptyObject,
-    ParentViewModel extends AnyViewModel | null = null,
+    ParentViewModel extends ViewModel<any> = ViewModel<any>,
   >
   extends AbstractViewModel<Payload, ParentViewModel>
   implements ViewModel<Payload, ParentViewModel>
@@ -32,6 +89,10 @@ export class ViewModelImpl<
     super(params);
   }
 
+  get queryParams() {
+    return this.rootStore.router.queryParams.data;
+  }
+
   protected getParentViewModel(
     parentViewModelId: Maybe<string>,
   ): ParentViewModel | null {
@@ -41,152 +102,51 @@ export class ViewModelImpl<
 
 ```
 
-### 2. Create `ViewModelStoreImpl` Class  
-
-This class will contains info about all your view model instances and will have fabric for creating instances of the your `ViewModelImpl` classes.  
-Because it requires (in most cases) the `rootStore`  
-
-```tsx  
-import {
-  AbstractViewModelParams,
-  AbstractViewModelStore,
-  ViewModel,
-  ViewModelCreateConfig,
-  ViewModelStore,
-  AnyViewModel,
-} from 'mobx-vm-entities';
-
-export class ViewModelStoreImpl
-  extends AbstractViewModelStore
-  implements ViewModelStore
-{
-  constructor(protected rootStore: RootStore) {
-    super();
-  }
-
-  create<VM extends AnyViewModel>(
-    config: ViewModelCreateConfig<VM>,
-  ): VM {
-    const VM = config.VM;
-
-    const params: AbstractViewModelParams<VM['payload']> = {
-      id: config.id,
-      payload: config.payload,
-      parentViewModelId: config.parentViewModelId,
-    };
-
-    return new VM(this.rootStore, params);
-  }
-}
-
-```  
-
-### 3. Attach your `ViewModelStore` to `rootStore`  
+### Add `ViewModelStore` into your `RootStore`   
 
 ```ts
-rootStore.viewModels = new ViewModelStoreImpl(rootStore);
-```
-
-### 4. Add `ViewModelsProvider` at the root of your React app  
+import { ViewModelStore } from 'mobx-vm-entities';
+import { ViewModelStoreImpl } from '@/shared/lib/mobx';
 
 
-```tsx
-import { ViewModelsProvider } from 'mobx-vm-entities';
-import { observer } from 'mobx-react-lite';
+export class RootStoreImpl implements RootStore {
+  viewModels: ViewModelStore;
 
-import { useRootStore } from '../../root-store'; // code line maybe different for your case
-
-export const App = observer(() => {
-  const rootStore = useRootStore();
-
-
-  return (
-    <ViewModelsProvider value={rootStore.viewModels}>
-      <Router />
-      <Notifications />
-      <ModalsContainer />
-    </ViewModelsProvider>
-  )
-})
-```
-
-
-### 5. Use it  
-
-```tsx
-import { ViewModelImpl } from "your-import";
-
-type Payload = {
-  test: number
+  constructor() {
+    this.viewModels = new ViewModelStoreImpl(this);
+  }
 }
+```  
 
-class MyButtonViewModel extends ViewModelImpl<Payload> {
-  title = 'click me!';
 
-  mount() {
+### Create `View` with `ViewModel`   
+
+```tsx
+import { ViewModelProps, withViewModel } from 'mobx-vm-entities';
+import { ViewModelImpl } from '@/shared/lib/mobx';
+
+export class MyPageVM extends ViewModelImpl {
+  @observable
+  accessor state = '';
+
+  async mount() {
     super.mount();
 
-    this.disposer.add(
-      reaction(() => this.payload.test > 10, (ok) => {
-        console.info("ok", ok)
-      })
-    )
+    await this.rootStore.myApi.load()
+  }
+
+  didMount() {
+    console.info('did mount');
   }
 
   unmount() {
     super.unmount();
   }
-
-  payloadChanged(payload) {
-    console.info('payload', payload);
-  }
-
-  handleClick = () => {
-    console.info("click")
-  }
-
-  dispose() {
-    super.dispose();
-
-    // your dispose
-  }
 }
 
-const MyButtonView = observer(({ model }: ViewModelProps<MyButtonViewModel>) => {
+const MyPageView = observer(({ model }: ViewModelProps<MyPageVM>) => {
+  return <div>{model.state}</div>;
+});
 
-
-  return (
-    <button onClick={model.handleClick}>{model.title}</button>
-  )
-})
-
-
-export const MyButton = withViewModel(
-  MyButtonViewModel,
-  // additional config
-  // {
-  //   id?: string, // could be used to set fixed identifier for singleton view models  
-  //   fallback?: ComponentType, // render fallback component  
-  //   ctx?: Record<string, any>, // additional object to customize something using viewModels store  
-  //   factory?:  (config: ViewModelCreateConfig<VM>) => VM; // function which create the instance of this view model  
-  // }
-)(MyButtonView);
-
-
-export const SomeOtherComponent = () => {
-  return (
-    <div>
-      <MyButton payload={{ test: 10 }} />
-    </div>
-  )
-}
-
+export const MyPage = withViewModel(MyPageVM)(MyPageView);
 ```
-
-
-
-
-
-
-
-
