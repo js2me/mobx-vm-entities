@@ -1,5 +1,5 @@
 import { ComponentProps, ComponentType } from 'react';
-import { loadable } from 'react-simple-loadable';
+import { loadable } from 'react-simple-loadable/loadable';
 
 import { Class } from '../utils/types';
 import { AnyViewModel } from '../view-model';

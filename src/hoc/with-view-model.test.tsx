@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 
+import { ViewModelsContext } from '../contexts';
+import { TestViewModelStoreImpl } from '../view-model/abstract-view-model.store.test';
 import { TestViewModelImpl } from '../view-model/view-model.impl.test';
 
 import { ViewModelProps, withViewModel } from './with-view-model';
@@ -61,15 +63,21 @@ describe('withViewModel', () => {
     expect(await screen.findAllByText('hello my-test')).toHaveLength(2);
   });
 
-  // test('renders with view model store', () => {
-  //   class VM extends TestViewModelImpl {}
-  //   const View = ({ model }: ViewModelProps<VM>) => {
-  //     return <div>{`hello ${model.id}`}</div>;
-  //   };
-  //   const Component = withViewModel(VM)(View);
-  //   const vmStore = new TestViewModelStoreImpl();
+  test('renders with view model store', () => {
+    class VM extends TestViewModelImpl {}
+    const View = ({ model }: ViewModelProps<VM>) => {
+      return <div>{`hello ${model.id}`}</div>;
+    };
+    const Component = withViewModel(VM)(View);
+    const vmStore = new TestViewModelStoreImpl();
 
-  //   render(<Component />);
-  //   expect(screen.getByText('hello VM_0_00000')).toBeDefined();
-  // });
+    render(
+      <div>
+        <ViewModelsContext.Provider value={vmStore} />
+      </div>,
+    );
+
+    screen.debug();
+    expect(screen.getByText('hello VM_0_00000')).toBeDefined();
+  });
 });

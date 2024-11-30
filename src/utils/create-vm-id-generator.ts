@@ -1,24 +1,20 @@
-import { createLinearNumericIdGenerator, generateId } from './id';
+import { internalCounter, createCounter } from './id';
 import { AnyObject } from './types';
 
 declare const process: { env: { NODE_ENV?: string } };
 
 export const generateVMId = (context: AnyObject) => {
-  if (!context.shortStaticId) {
-    context.shortStaticId = generateId();
-  }
-  if (!context.generateNumericId) {
-    context.generateNumericId = createLinearNumericIdGenerator(5);
-  }
+  if (!context.generateId) {
+    const staticId = internalCounter().toString(16);
+    const counter = createCounter();
 
-  if (!context.idGenerator) {
-    context.idGenerator = () =>
-      `${context.shortStaticId}_${context.generateNumericId()}`;
+    context.generateId = () =>
+      `${staticId}_${counter().toString().padStart(5, '0')}`;
   }
 
   if (process.env.NODE_ENV === 'production') {
-    return context.idGenerator();
+    return context.generateId();
   } else {
-    return `${context.VM?.name}_${context.idGenerator()}`;
+    return `${context.VM?.name}_${context.generateId()}`;
   }
 };
