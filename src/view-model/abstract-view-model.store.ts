@@ -7,7 +7,7 @@ import {
   runInAction,
 } from 'mobx';
 
-import { createLinearNumericIdGenerator, generateId } from '../utils';
+import { generateVMId } from '../utils';
 import { Class, Maybe } from '../utils/types';
 
 import { ViewModelStore } from './view-model.store';
@@ -16,8 +16,6 @@ import {
   ViewModelGenerateIdConfig,
 } from './view-model.store.types';
 import { AnyViewModel } from './view-model.types';
-
-declare const process: { env: { NODE_ENV?: string } };
 
 export abstract class AbstractViewModelStore<
   VMBase extends AnyViewModel = AnyViewModel,
@@ -65,20 +63,7 @@ export abstract class AbstractViewModelStore<
     if (config.id) {
       return config.id;
     } else {
-      if (!config.ctx.shortStaticId) {
-        config.ctx.shortStaticId = generateId();
-      }
-      if (!config.ctx.generateNumericId) {
-        config.ctx.generateNumericId = createLinearNumericIdGenerator(5);
-      }
-
-      const id = `${config.ctx.shortStaticId}_${config.ctx.generateNumericId()}`;
-
-      if (process.env.NODE_ENV === 'production') {
-        return id;
-      } else {
-        return `${config.VM.name}_${id}`;
-      }
+      return generateVMId(config.ctx);
     }
   }
 

@@ -10,6 +10,7 @@ import {
 } from 'react';
 
 import { ActiveViewContext, ViewModelsContext } from '../contexts';
+import { generateVMId } from '../utils';
 import { AnyObject, Class, EmptyObject, Maybe } from '../utils/types';
 import { AnyViewModel, ViewModel, ViewModelCreateConfig } from '../view-model';
 
@@ -69,6 +70,8 @@ export function withViewModel(
 ) {
   const context: AnyObject = config?.ctx ?? {};
 
+  context.VM = Model;
+
   return (Component: ComponentType<any>) => {
     const instances = new Map<string, AnyViewModel>();
 
@@ -84,14 +87,17 @@ export function withViewModel(
       const parentViewModelId = useContext(ActiveViewContext) || null;
 
       if (!idRef.current) {
-        idRef.current = viewModels.generateViewModelId({
-          ctx: context,
-          id: config?.id,
-          VM: Model,
-          parentViewModelId,
-          fallback: config?.fallback,
-          instances,
-        });
+        idRef.current =
+          viewModels?.generateViewModelId({
+            ctx: context,
+            id: config?.id,
+            VM: Model,
+            parentViewModelId,
+            fallback: config?.fallback,
+            instances,
+          }) ??
+          config?.id ??
+          generateVMId(context);
       }
 
       const id = idRef.current;
@@ -111,7 +117,8 @@ export function withViewModel(
 
         const instance =
           config?.factory?.(configCreate) ??
-          viewModels.createViewModel<any>(configCreate);
+          viewModels?.createViewModel<any>(configCreate) ??
+          new Model(configCreate);
 
         instances.set(id, instance);
       }
@@ -119,10 +126,10 @@ export function withViewModel(
       const instance: ViewModel = instances.get(id)!;
 
       useEffect(() => {
-        viewModels.attach(instance);
+        viewModels?.attach(instance);
 
         return () => {
-          viewModels.detach(id);
+          viewModels?.detach(id);
           instances.delete(id);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,7 +142,7 @@ export function withViewModel(
 
       config?.reactHooks?.(allProps);
 
-      if (viewModels.isAbleToRenderView(id) && instance) {
+      if ((!viewModels || viewModels.isAbleToRenderView(id)) && instance) {
         return (
           <ActiveViewContext.Provider value={id}>
             <Component {...(componentProps as any)} model={instance} />

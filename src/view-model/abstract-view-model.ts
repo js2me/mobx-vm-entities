@@ -81,8 +81,7 @@ export abstract class AbstractViewModel<
    * The method is called when the view was unmounted
    */
   didUnmount() {
-    // eslint-disable-next-line sonarjs/deprecation
-    this.dispose();
+    this.abortController.abort();
   }
 
   /**

@@ -40,12 +40,15 @@
     "react": ">=18.3.1"
   },
   "devDependencies": {
+    "@testing-library/react": "16.0.1",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "20.14.5",
     "@types/react": "^18.3.3",
+    "@vitejs/plugin-react-swc": "3.7.2",
     "eslint": "8.57.0",
     "js2me-eslint-config": "1.0.4",
     "js2me-exports-post-build-script": "2.0.14",
+    "jsdom": "25.0.1",
     "rimraf": "6.0.1",
     "typescript": "5.4.5",
     "vitest": "2.1.4"

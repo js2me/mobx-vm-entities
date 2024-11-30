@@ -6,3 +6,4 @@ export * from './abstract-view-model.store';
 export * from './view-model.store.types';
 export * from './view-model.types';
 export * from './view-model.impl';
+export * from './view-model.store.impl';

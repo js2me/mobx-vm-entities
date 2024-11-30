@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { AnyObject, EmptyObject, Maybe } from '../utils/types';
 
 import { AbstractViewModelStore } from './abstract-view-model.store';
-import { TestViewModelImpl } from './abstract-view-model.test';
+import { TestAbstractViewModelImpl } from './abstract-view-model.test';
 import { AbstractViewModelParams } from './abstract-view-model.types';
 import { ViewModel } from './view-model';
 import { ViewModelStore } from './view-model.store';
@@ -47,7 +47,7 @@ describe('AbstractViewModelStore', () => {
 
   it('is able to attach view model', async () => {
     const vmStore = new TestViewModelStoreImpl();
-    const vm = new TestViewModelImpl({ id: '1' });
+    const vm = new TestAbstractViewModelImpl({ id: '1' });
     await vmStore.attach(vm);
     expect(vmStore.get('1')).toBe(vm);
     expect(vmStore.instanceAttachedCount.get('1')).toBe(1);
@@ -55,18 +55,18 @@ describe('AbstractViewModelStore', () => {
 
   it('is able to detach view model', async () => {
     const vmStore = new TestViewModelStoreImpl();
-    const vm = new TestViewModelImpl({ id: '1' });
+    const vm = new TestAbstractViewModelImpl({ id: '1' });
     await vmStore.attach(vm);
     await vmStore.detach('1');
     expect(vmStore.get('1')).toBe(null);
     expect(vmStore.instanceAttachedCount.get('1')).toBe(undefined);
   });
 
-  it('accessing to parent view models using store', async () => {
+  it('accessing to parent view models using store [using parentViewModelId and vmStore]', async () => {
     class TestViewModelImpl1<
       Payload extends AnyObject = EmptyObject,
       ParentViewModel extends AnyViewModel | null = null,
-    > extends TestViewModelImpl<Payload, ParentViewModel> {
+    > extends TestAbstractViewModelImpl<Payload, ParentViewModel> {
       constructor(
         private vmStore: ViewModelStore,
         params?: Partial<AbstractViewModelParams<Payload>>,
