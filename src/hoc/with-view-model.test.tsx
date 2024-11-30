@@ -9,7 +9,7 @@ import { ViewModelProps, withViewModel } from './with-view-model';
 
 describe('withViewModel', () => {
   test('renders', () => {
-    class VM extends TestViewModelImpl {}
+    class VM extends TestViewModelImpl { }
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
@@ -20,7 +20,7 @@ describe('withViewModel', () => {
   });
 
   test('renders twice', async () => {
-    class VM extends TestViewModelImpl {}
+    class VM extends TestViewModelImpl { }
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
@@ -37,7 +37,7 @@ describe('withViewModel', () => {
   });
 
   test('renders with fixed id', () => {
-    class VM extends TestViewModelImpl {}
+    class VM extends TestViewModelImpl { }
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
@@ -48,7 +48,7 @@ describe('withViewModel', () => {
   });
 
   test('renders twice with fixed id', async () => {
-    class VM extends TestViewModelImpl {}
+    class VM extends TestViewModelImpl { }
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
@@ -64,7 +64,7 @@ describe('withViewModel', () => {
   });
 
   test('renders with view model store', () => {
-    class VM extends TestViewModelImpl {}
+    class VM extends TestViewModelImpl { }
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
@@ -73,8 +73,19 @@ describe('withViewModel', () => {
 
     render(
       <div>
-        <ViewModelsContext.Provider value={vmStore} />
+        2
+        <Component />
+        1
       </div>,
+      {
+        wrapper: ({ children }) => {
+          return (
+            <ViewModelsContext.Provider value={vmStore}>
+              {children}
+            </ViewModelsContext.Provider>
+          );
+        },
+      },
     );
 
     screen.debug();
