@@ -6,7 +6,7 @@ MobX ViewModel power for ReactJS
 
 ```tsx
 import { ViewModelProps, ViewModelImpl, withViewModel } from 'mobx-vm-entities';
-export class MyPageVM extends ViewModelImpl {
+export class MyPageVM extends ViewModelImpl<{ payloadA: string }> {
   @observable
   accessor state = '';
 
@@ -28,6 +28,8 @@ const MyPageView = observer(({ model }: ViewModelProps<MyPageVM>) => {
 });
 
 export const MyPage = withViewModel(MyPageVM)(MyPageView);
+
+<MyPage payload={{ payloadA: '1' }} />
 ```
 
 ## Detailed Configuration  
