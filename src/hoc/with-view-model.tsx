@@ -101,8 +101,8 @@ export function withViewModel(
       if (!idRef.current) {
         idRef.current =
           viewModels?.generateViewModelId({
-            ctx: ctx,
-            id: config?.id,    
+            ctx,
+            id: config?.id,
             VM: Model,
             parentViewModelId,
             fallback: config?.fallback,
@@ -124,7 +124,7 @@ export function withViewModel(
             (parentViewModelId && instances.get(parentViewModelId)) || null,
           fallback: config?.fallback,
           instances,
-          ctx: ctx,
+          ctx,
         };
 
         const instance =

@@ -1,78 +1,79 @@
-import { act, render, screen, } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { observer } from 'mobx-react-lite';
 import { ReactNode } from 'react';
 import { describe, expect, test } from 'vitest';
 
 import { ViewModelsProvider } from '..';
+import { createCounter } from '../utils';
 import { TestViewModelStoreImpl } from '../view-model/abstract-view-model.store.test';
 import { TestViewModelImpl } from '../view-model/view-model.impl.test';
 
 import { ViewModelProps, withViewModel } from './with-view-model';
-import { createCounter } from '../utils';
 
 const createIdGenerator = (prefix?: string) => {
   const counter = createCounter();
-  return () => (prefix || '') + counter().toString()
-}
+  return () => (prefix ?? '') + counter().toString();
+};
 
 describe('withViewModel', () => {
   test('renders', () => {
-    class VM extends TestViewModelImpl { }
+    class VM extends TestViewModelImpl {}
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
-    const Component = withViewModel(VM, { generateId: createIdGenerator() })(View);
+    const Component = withViewModel(VM, { generateId: createIdGenerator() })(
+      View,
+    );
 
     render(<Component />);
     expect(screen.getByText('hello VM_0')).toBeDefined();
   });
 
   test('renders nesting', () => {
-    class VM1 extends TestViewModelImpl { }
-    const View1 = ({
+    const Component1 = withViewModel(TestViewModelImpl)(({
       children,
-    }: ViewModelProps<VM1> & { children?: ReactNode }) => {
+    }: {
+      children?: ReactNode;
+    }) => {
       return (
-        <div data-testid="parent-container">
+        <div data-testid={'parent-container'}>
           <div>parent</div>
-          <div>{children}</div>
+          {children}
         </div>
       );
-    };
-    const Component1 = withViewModel(VM1, { generateId: createIdGenerator() })(View1);
+    });
+    const Component2 = withViewModel(TestViewModelImpl)(() => {
+      return <div>child</div>;
+    });
 
-    const Component2 = withViewModel(class VM2 extends TestViewModelImpl { }, { generateId: createIdGenerator() })(
-      () => {
-        return <div>child</div>;
-      },
-
-    );
-
-    render(
+    const { container } = render(
       <Component1>
         <Component2 />
       </Component1>,
     );
-    expect(screen.getByTestId('parent-container')).toBe(`<div
-  data-testid="parent-container"
->
-  <div>
-    parent
-  </div>
-  <div>
-    <div>
-      child
-    </div>
-  </div>
-</div>`);
+
+    expect(container.firstChild).toMatchInlineSnapshot(`
+      <div
+        data-testid="parent-container"
+      >
+        <div>
+          parent
+        </div>
+        <div>
+          child
+        </div>
+      </div>
+    `);
   });
 
   test('renders twice', async () => {
-    class VM extends TestViewModelImpl { }
+    class VM extends TestViewModelImpl {}
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
-    const Component = withViewModel(VM, { generateId: createIdGenerator() })(View);
+    const Component = withViewModel(VM, { generateId: createIdGenerator() })(
+      View,
+    );
 
     render(
       <>
@@ -85,7 +86,7 @@ describe('withViewModel', () => {
   });
 
   test('renders with fixed id', () => {
-    class VM extends TestViewModelImpl { }
+    class VM extends TestViewModelImpl {}
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
@@ -96,7 +97,7 @@ describe('withViewModel', () => {
   });
 
   test('renders twice with fixed id', async () => {
-    class VM extends TestViewModelImpl { }
+    class VM extends TestViewModelImpl {}
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
@@ -112,15 +113,15 @@ describe('withViewModel', () => {
   });
 
   test('renders with view model store', async () => {
-    class VM extends TestViewModelImpl { }
+    class VM extends TestViewModelImpl {}
     const View = observer(({ model }: ViewModelProps<VM>) => {
       return (
         <div>
-          <div>{`hello my friend. Model has id ? ${!!model.id}`}</div>
+          <div>{`hello my friend. Model id is ${model.id}`}</div>
         </div>
       );
     });
-    const Component = withViewModel(VM)(View);
+    const Component = withViewModel(VM, { generateId: () => '1' })(View);
     const vmStore = new TestViewModelStoreImpl();
 
     const Wrapper = ({ children }: { children?: ReactNode }) => {
@@ -135,8 +136,6 @@ describe('withViewModel', () => {
       }),
     );
 
-    expect(
-      screen.getByText('hello my friend. Model has id ? true'),
-    ).toBeDefined();
+    expect(screen.getByText('hello my friend. Model id is VM_1')).toBeDefined();
   });
 });
