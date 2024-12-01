@@ -1,4 +1,4 @@
-import { internalCounter, createCounter } from './id';
+import { internalCounter, createCounter } from './counter';
 import { AnyObject } from './types';
 
 declare const process: { env: { NODE_ENV?: string } };

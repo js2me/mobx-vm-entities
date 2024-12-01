@@ -1,2 +1,2 @@
-export * from './id';
+export * from './counter';
 export * from './create-vm-id-generator';

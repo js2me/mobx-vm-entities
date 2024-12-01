@@ -28,11 +28,22 @@ export type ViewModelHocConfig<VM extends AnyViewModel> = {
    * Уникальный идентификатор вьюшки
    */
   id?: Maybe<string>;
+
+  /**
+   * Функция генератор идентификатор для вью модели
+   */
+  generateId?: (ctx: AnyObject) => string;
+
+  /**
+   * Компонент, который будет отрисован в случае если инциализация вью модели происходит слишком долго
+   */
   fallback?: ComponentType;
+
   /**
    * Доп. данные, которые могут быть полезны при создании VM
    */
   ctx?: AnyObject;
+
   /**
    * Функция, в которой можно вызывать доп. реакт хуки в результирующем компоненте
    */
@@ -68,9 +79,10 @@ export function withViewModel(
   Model: Class<any>,
   config?: ViewModelHocConfig<any>,
 ) {
-  const context: AnyObject = config?.ctx ?? {};
+  const ctx: AnyObject = config?.ctx ?? {};
 
-  context.VM = Model;
+  ctx.VM = Model;
+  ctx.generateId = config?.generateId;
 
   return (Component: ComponentType<any>) => {
     const instances = new Map<string, AnyViewModel>();
@@ -89,15 +101,15 @@ export function withViewModel(
       if (!idRef.current) {
         idRef.current =
           viewModels?.generateViewModelId({
-            ctx: context,
-            id: config?.id,
+            ctx: ctx,
+            id: config?.id,    
             VM: Model,
             parentViewModelId,
             fallback: config?.fallback,
             instances,
           }) ??
           config?.id ??
-          generateVMId(context);
+          generateVMId(ctx);
       }
 
       const id = idRef.current;
@@ -112,7 +124,7 @@ export function withViewModel(
             (parentViewModelId && instances.get(parentViewModelId)) || null,
           fallback: config?.fallback,
           instances,
-          ctx: context,
+          ctx: ctx,
         };
 
         const instance =
