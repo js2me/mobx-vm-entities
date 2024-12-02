@@ -1,4 +1,3 @@
-import { last } from 'lodash-es';
 import {
   action,
   computed,
@@ -27,12 +26,12 @@ export abstract class AbstractViewModelStore<
   instanceAttachedCount = new Map<string, number>();
 
   /**
-   * Views waiting for loading
+   * Views waiting for mount
    */
   mountingViews = observable.set<string>();
 
   /**
-   * Вьюшки, ожидающие выгрузки
+   * Views waiting for unmount
    */
   unmountingViews = observable.set<string>();
 
@@ -70,14 +69,20 @@ export abstract class AbstractViewModelStore<
   getId<T extends VMBase>(idOrClass: Maybe<string | Class<T>>): string | null {
     if (!idOrClass) return null;
 
-    const id =
-      typeof idOrClass === 'string'
-        ? idOrClass
-        : last(this.viewModelsByClasses.get(idOrClass.name));
+    if (typeof idOrClass === 'string') {
+      return idOrClass;
+    }
 
-    if (!id) return null;
+    const className = idOrClass.name;
+    const viewModels = this.viewModelsByClasses.get(className) || [];
 
-    return id;
+    if (process.env.NODE_ENV !== 'production' && viewModels.length > 1) {
+      console.warn(
+        `Found more than 1 view model with the same identifier "${className}". Last instance will been returned`,
+      );
+    }
+
+    return viewModels.at(-1)!;
   }
 
   has<T extends VMBase>(idOrClass: Maybe<string | Class<T>>): boolean {

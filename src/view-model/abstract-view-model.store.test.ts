@@ -56,6 +56,17 @@ describe('AbstractViewModelStore', () => {
     expect(vmStore.instanceAttachedCount.get('1')).toBe(undefined);
   });
 
+  it('is able to get total mounted views count', async () => {
+    const vmStore = new TestViewModelStoreImpl();
+    await vmStore.attach(new TestAbstractViewModelImpl({ id: '1' }));
+    await vmStore.attach(new TestAbstractViewModelImpl({ id: '1' }));
+    await vmStore.attach(new TestAbstractViewModelImpl({ id: '2' }));
+    await vmStore.attach(new TestAbstractViewModelImpl({ id: '2' }));
+    await vmStore.attach(new TestAbstractViewModelImpl({ id: '3' }));
+    await vmStore.attach(new TestAbstractViewModelImpl({ id: '3' }));
+    expect(vmStore.mountedViewsCount).toBe(6);
+  });
+
   it('accessing to parent view models using store [using parentViewModelId and vmStore]', async () => {
     class TestViewModelImpl1<
       Payload extends AnyObject = EmptyObject,
