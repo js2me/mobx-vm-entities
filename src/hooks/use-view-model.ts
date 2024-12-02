@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { ActiveViewContext, ViewModelsContext } from '../contexts';
+import { ActiveViewModelContext, ViewModelsContext } from '../contexts';
 import { Class, Maybe } from '../utils/types';
 import { AnyViewModel } from '../view-model';
 
@@ -8,12 +8,12 @@ export const useViewModel = <T extends AnyViewModel>(
   idOrClass?: Maybe<string> | Class<T>,
 ): T => {
   const viewModels = useContext(ViewModelsContext);
-  const activeViewId = useContext(ActiveViewContext);
-  const model = viewModels.get<T>(idOrClass ?? activeViewId);
+  const activeViewModel = useContext(ActiveViewModelContext);
+  const model = viewModels?.get<T>(idOrClass);
 
-  if (!model) {
+  if (!activeViewModel && !model) {
     throw new Error('No model for view');
   }
 
-  return model;
+  return (activeViewModel as unknown as T) || model;
 };

@@ -9,7 +9,7 @@ import {
   useRef,
 } from 'react';
 
-import { ActiveViewContext, ViewModelsContext } from '../contexts';
+import { ActiveViewModelContext, ViewModelsContext } from '../contexts';
 import { generateVMId } from '../utils';
 import { AnyObject, Class, EmptyObject, Maybe } from '../utils/types';
 import { AnyViewModel, ViewModel, ViewModelCreateConfig } from '../view-model';
@@ -96,7 +96,7 @@ export function withViewModel(
 
       const idRef = useRef<string>('');
       const viewModels = useContext(ViewModelsContext);
-      const parentViewModelId = useContext(ActiveViewContext) || null;
+      const parentViewModel = useContext(ActiveViewModelContext) || null;
 
       if (!idRef.current) {
         idRef.current =
@@ -104,7 +104,7 @@ export function withViewModel(
             ctx,
             id: config?.id,
             VM: Model,
-            parentViewModelId,
+            parentViewModelId: parentViewModel?.id,
             fallback: config?.fallback,
             instances,
           }) ??
@@ -117,12 +117,12 @@ export function withViewModel(
       if (!instances.has(id)) {
         const configCreate: ViewModelCreateConfig<any> = {
           id,
-          parentViewModelId,
+          parentViewModelId: parentViewModel?.id,
           payload,
           VM: Model,
           viewModels,
           parentViewModel:
-            (parentViewModelId && instances.get(parentViewModelId)) || null,
+            (parentViewModel && instances.get(parentViewModel?.id)) || null,
           fallback: config?.fallback,
           instances,
           ctx,
@@ -157,9 +157,9 @@ export function withViewModel(
 
       if ((!viewModels || viewModels.isAbleToRenderView(id)) && instance) {
         return (
-          <ActiveViewContext.Provider value={id}>
+          <ActiveViewModelContext.Provider value={instance}>
             <Component {...(componentProps as any)} model={instance} />
-          </ActiveViewContext.Provider>
+          </ActiveViewModelContext.Provider>
         );
       }
 

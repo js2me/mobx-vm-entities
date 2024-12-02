@@ -3,7 +3,7 @@
   "version": "4.2.0",
   "scripts": {
     "clean": "rimraf dist",
-    "check": "eslint . --fix && pnpm test",
+    "check": "eslint . --fix && pnpm test:coverage",
     "prebuild": "npm run clean && npm run check",
     "build": "tsc && node ./post-build.mjs",
     "pub": "PUBLISH=true pnpm run build",
@@ -12,7 +12,8 @@
     "pub:major": "PUBLISH=true PUBLISH_VERSION=major pnpm run build",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "dev": "pnpm test:watch"
   },
   "keywords": [
     "mobx",

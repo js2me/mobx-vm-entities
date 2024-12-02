@@ -22,7 +22,8 @@ module.exports = {
         'unicorn/consistent-function-scoping': 'off',
         'unicorn/no-this-assignment': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
-        '@typescript-eslint/no-this-alias': 'off'
+        '@typescript-eslint/no-this-alias': 'off',
+        'react-hooks/rules-of-hooks': 'off',
       },
       parserOptions: {
         project: 'tsconfig.test.json',
