@@ -11,7 +11,8 @@
     "pub:minor": "PUBLISH=true PUBLISH_VERSION=minor pnpm run build",
     "pub:major": "PUBLISH=true PUBLISH_VERSION=major pnpm run build",
     "test": "vitest run",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": [
     "mobx",
@@ -46,6 +47,7 @@
     "@types/node": "20.14.5",
     "@types/react": "^18.3.3",
     "@vitejs/plugin-react-swc": "3.7.2",
+    "@vitest/coverage-istanbul": "2.1.6",
     "eslint": "8.57.0",
     "js2me-eslint-config": "1.0.4",
     "js2me-exports-post-build-script": "2.0.14",
