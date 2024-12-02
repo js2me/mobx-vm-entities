@@ -6,6 +6,7 @@ import { AbstractViewModelStore } from './abstract-view-model.store';
 import { TestAbstractViewModelImpl } from './abstract-view-model.test';
 import { AbstractViewModelParams } from './abstract-view-model.types';
 import { ViewModel } from './view-model';
+import { TestViewModelImpl } from './view-model.impl.test';
 import { ViewModelStore } from './view-model.store';
 import {
   ViewModelCreateConfig,
@@ -20,14 +21,7 @@ export class TestViewModelStoreImpl extends AbstractViewModelStore {
 
   createViewModel<VM extends ViewModel>(config: ViewModelCreateConfig<VM>): VM {
     const VM = config.VM;
-
-    const params: AbstractViewModelParams<VM['payload']> = {
-      id: config.id,
-      payload: config.payload,
-      parentViewModelId: config.parentViewModelId,
-    };
-
-    return new VM(params);
+    return new VM(config);
   }
 
   generateViewModelId<VM extends ViewModel>(
@@ -98,5 +92,48 @@ describe('AbstractViewModelStore', () => {
     await vmStore.attach(parentVM);
 
     expect(childVM.parentViewModel.id).toBe('parent');
+  });
+
+  it('able to get access to view model by id', async () => {
+    const vmStore = new TestViewModelStoreImpl();
+
+    const vm = new TestViewModelImpl();
+
+    await vmStore.attach(vm);
+
+    expect(vmStore.get(vm.id)).toBe(vm);
+  });
+
+  it('able to get access to view model by Class', async () => {
+    const vmStore = new TestViewModelStoreImpl();
+
+    class MyVM extends TestViewModelImpl {}
+    const vm = new MyVM();
+
+    await vmStore.attach(vm);
+
+    expect(vmStore.get(MyVM)).toBe(vm);
+  });
+
+  it('able to get instance id by id (getId method)', async () => {
+    const vmStore = new TestViewModelStoreImpl();
+
+    class MyVM extends TestViewModelImpl {}
+    const vm = new MyVM();
+
+    await vmStore.attach(vm);
+
+    expect(vmStore.getId(vm.id)).toBe(vm.id);
+  });
+
+  it('able to get instance id by Class (getId method)', async () => {
+    const vmStore = new TestViewModelStoreImpl();
+
+    class MyVM extends TestViewModelImpl {}
+    const vm = new MyVM();
+
+    await vmStore.attach(vm);
+
+    expect(vmStore.getId(MyVM)).toBe(vm.id);
   });
 });

@@ -1,9 +1,9 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { observer } from 'mobx-react-lite';
-import { ReactNode } from 'react';
-import { describe, expect, test } from 'vitest';
+import { ReactNode, useState } from 'react';
+import { describe, expect, test, vi } from 'vitest';
 
-import { ViewModelsProvider } from '..';
+import { ViewModelStore, ViewModelsProvider } from '..';
 import { createCounter } from '../utils';
 import { TestViewModelStoreImpl } from '../view-model/abstract-view-model.store.test';
 import { TestViewModelImpl } from '../view-model/view-model.impl.test';
@@ -112,30 +112,179 @@ describe('withViewModel', () => {
     expect(await screen.findAllByText('hello my-test')).toHaveLength(2);
   });
 
-  test('renders with view model store', async () => {
+  test('View should be only mounted (renders only 1 time)', () => {
     class VM extends TestViewModelImpl {}
-    const View = observer(({ model }: ViewModelProps<VM>) => {
-      return (
-        <div>
-          <div>{`hello my friend. Model id is ${model.id}`}</div>
-        </div>
-      );
+    const View = vi.fn(({ model }: ViewModelProps<VM>) => {
+      return <div>{`hello ${model.id}`}</div>;
     });
-    const Component = withViewModel(VM, { generateId: () => '1' })(View);
-    const vmStore = new TestViewModelStoreImpl();
+    const Component = withViewModel(VM, { generateId: createIdGenerator() })(
+      View,
+    );
 
-    const Wrapper = ({ children }: { children?: ReactNode }) => {
+    render(<Component />);
+    expect(View).toHaveBeenCalledTimes(1);
+  });
+
+  test('withViewModel wrapper should by only mounted (renders only 1 time)', () => {
+    class VM extends TestViewModelImpl {}
+    const View = vi.fn(({ model }: ViewModelProps<VM>) => {
+      return <div>{`hello ${model.id}`}</div>;
+    });
+
+    const useHookSpy = vi.fn(() => {});
+
+    const Component = withViewModel(VM, {
+      generateId: createIdGenerator(),
+      reactHooks: useHookSpy, // the save renders count as withViewModel wrapper
+    })(View);
+
+    render(<Component />);
+    expect(useHookSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('View should be updated when payload is changed', async () => {
+    class VM extends TestViewModelImpl<{ counter: number }> {}
+    const View = vi.fn(({ model }: ViewModelProps<VM>) => {
+      return <div>{`hello ${model.id}`}</div>;
+    });
+    const Component = withViewModel(VM, { generateId: createIdGenerator() })(
+      View,
+    );
+
+    const SuperContainer = () => {
+      const [counter, setCounter] = useState(0);
+
       return (
-        <ViewModelsProvider value={vmStore}>{children}</ViewModelsProvider>
+        <>
+          <button
+            data-testid={'increment'}
+            onClick={() => setCounter(counter + 1)}
+          >
+            increment
+          </button>
+          <Component payload={{ counter }} />
+        </>
       );
     };
 
-    await act(async () =>
-      render(<Component />, {
-        wrapper: Wrapper,
-      }),
+    await act(() => render(<SuperContainer />));
+
+    const incrementButton = screen.getByTestId('increment');
+
+    fireEvent.click(incrementButton);
+    fireEvent.click(incrementButton);
+    fireEvent.click(incrementButton);
+
+    expect(View).toHaveBeenCalledTimes(4);
+  });
+
+  test('View should have actual payload state', async () => {
+    let vm: TestViewModelImpl<{ counter: number }> | null;
+
+    class VM extends TestViewModelImpl<{ counter: number }> {
+      constructor(...args: any[]) {
+        super(...args);
+        vm = this;
+      }
+    }
+
+    const View = vi.fn(({ model }: ViewModelProps<VM>) => {
+      return <div>{`hello ${model.id}`}</div>;
+    });
+    const Component = withViewModel(VM, { generateId: createIdGenerator() })(
+      View,
     );
 
-    expect(screen.getByText('hello my friend. Model id is VM_1')).toBeDefined();
+    const SuperContainer = () => {
+      const [counter, setCounter] = useState(0);
+
+      return (
+        <>
+          <button
+            data-testid={'increment'}
+            onClick={() => setCounter(counter + 1)}
+          >
+            increment
+          </button>
+          <Component payload={{ counter }} />
+        </>
+      );
+    };
+
+    await act(() => render(<SuperContainer />));
+
+    const incrementButton = screen.getByTestId('increment');
+
+    fireEvent.click(incrementButton);
+    fireEvent.click(incrementButton);
+    fireEvent.click(incrementButton);
+
+    // @ts-ignore
+    expect(vm?.payload).toEqual({ counter: 3 });
+  });
+
+  describe('with ViewModelStore', () => {
+    test('renders', async () => {
+      class VM extends TestViewModelImpl {}
+      const View = observer(({ model }: ViewModelProps<VM>) => {
+        return (
+          <div>
+            <div>{`hello my friend. Model id is ${model.id}`}</div>
+          </div>
+        );
+      });
+      const Component = withViewModel(VM, { generateId: () => '1' })(View);
+      const vmStore = new TestViewModelStoreImpl();
+
+      const Wrapper = ({ children }: { children?: ReactNode }) => {
+        return (
+          <ViewModelsProvider value={vmStore}>{children}</ViewModelsProvider>
+        );
+      };
+
+      await act(async () =>
+        render(<Component />, {
+          wrapper: Wrapper,
+        }),
+      );
+
+      expect(
+        screen.getByText('hello my friend. Model id is VM_1'),
+      ).toBeDefined();
+    });
+
+    test('able to get access to view model store', async () => {
+      let viewModels: ViewModelStore = null as any;
+
+      class VM extends TestViewModelImpl {
+        constructor(params: any) {
+          super(params);
+          viewModels = params.viewModels;
+        }
+      }
+      const View = observer(({ model }: ViewModelProps<VM>) => {
+        return (
+          <div>
+            <div>{`hello my friend. Model id is ${model.id}`}</div>
+          </div>
+        );
+      });
+      const Component = withViewModel(VM, { generateId: () => '1' })(View);
+      const vmStore = new TestViewModelStoreImpl();
+
+      const Wrapper = ({ children }: { children?: ReactNode }) => {
+        return (
+          <ViewModelsProvider value={vmStore}>{children}</ViewModelsProvider>
+        );
+      };
+
+      await act(async () =>
+        render(<Component />, {
+          wrapper: Wrapper,
+        }),
+      );
+
+      expect(viewModels).toBeDefined();
+    });
   });
 });

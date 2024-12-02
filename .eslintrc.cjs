@@ -14,7 +14,15 @@ module.exports = {
     {
       files: [
         "*.test.ts",
+        "*.test.tsx"
       ],
+      rules: {
+        'sonarjs/no-identical-functions': 'off',
+        'sonarjs/no-nested-functions': 'off',
+        'unicorn/consistent-function-scoping': 'off',
+        'unicorn/no-this-assignment': 'off',
+        '@typescript-eslint/ban-ts-comment': 'off'
+      },
       parserOptions: {
         project: 'tsconfig.test.json',
       },

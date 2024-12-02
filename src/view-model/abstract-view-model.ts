@@ -7,7 +7,10 @@ import { AnyObject, EmptyObject, Maybe } from '../utils/types';
 
 import { AbstractViewModelParams } from './abstract-view-model.types';
 import { ViewModel } from './view-model';
+import { ViewModelStore } from './view-model.store';
 import { AnyViewModel } from './view-model.types';
+
+declare const process: { env: { NODE_ENV?: string } };
 
 export abstract class AbstractViewModel<
   Payload extends AnyObject = EmptyObject,
@@ -50,6 +53,16 @@ export abstract class AbstractViewModel<
       didUnmount: action,
       setPayload: action,
     });
+  }
+
+  protected get viewModels(): ViewModelStore {
+    if (process.env.NODE_ENV !== 'production' && !this.params.viewModels) {
+      console.warn(
+        'accessing to viewModels is not possible. [viewModels] param is not setted during to creating instance AbstractViewModel',
+      );
+    }
+
+    return this.params.viewModels!;
   }
 
   /**
