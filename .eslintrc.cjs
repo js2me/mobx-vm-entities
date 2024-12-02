@@ -21,7 +21,8 @@ module.exports = {
         'sonarjs/no-nested-functions': 'off',
         'unicorn/consistent-function-scoping': 'off',
         'unicorn/no-this-assignment': 'off',
-        '@typescript-eslint/ban-ts-comment': 'off'
+        '@typescript-eslint/ban-ts-comment': 'off',
+        '@typescript-eslint/no-this-alias': 'off'
       },
       parserOptions: {
         project: 'tsconfig.test.json',
