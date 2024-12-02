@@ -18,3 +18,4 @@ jsconfig.json
 post-build.mjs
 vitest.config.ts
 setupTests.js
+coverage
