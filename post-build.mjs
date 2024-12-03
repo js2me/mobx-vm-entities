@@ -6,7 +6,7 @@ postBuildScript({
   srcDirName: 'src',
   filesToCopy: ['LICENSE', 'README.md'],
   updateVersion: process.env.PUBLISH_VERSION,
-  onDone: (versionsDiff, _, packageJson) => {
+  onDone: (versionsDiff, _, packageJson, { targetPackageJson}) => {
     if (process.env.PUBLISH) {
       publishScript({
         nextVersion: versionsDiff?.next ?? packageJson.version,
@@ -16,6 +16,8 @@ postBuildScript({
         createTag: true,
         githubRepoLink: 'https://github.com/js2me/mobx-vm-entities',
         cleanupCommand: 'pnpm clean', 
+        targetPackageJson,
+        otherNames: ['mobx-view-model']
       })
     }
   }
