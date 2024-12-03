@@ -34,6 +34,23 @@ export class TestViewModelStoreImpl extends AbstractViewModelStore {
 }
 
 describe('AbstractViewModelStore', () => {
+  it('has clean method', () => {
+    const vmStore = new TestViewModelStoreImpl();
+    expect(vmStore.clean).toBeDefined();
+  });
+  it('has dispose method', () => {
+    const vmStore = new TestViewModelStoreImpl();
+    expect(vmStore.dispose).toBeDefined();
+  });
+  it('has attach method', () => {
+    const vmStore = new TestViewModelStoreImpl();
+    expect(vmStore.attach).toBeDefined();
+  });
+  it('has createViewModel method', () => {
+    const vmStore = new TestViewModelStoreImpl();
+    expect(vmStore.createViewModel).toBeDefined();
+  });
+
   it('create instance', () => {
     const vmStore = new TestViewModelStoreImpl();
     expect(vmStore).toBeDefined();

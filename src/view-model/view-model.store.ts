@@ -1,5 +1,4 @@
-import { Disposable } from 'disposer-util';
-
+import { Cleanable } from '../utils/cleanable';
 import { Class, Maybe } from '../utils/types';
 
 import {
@@ -13,7 +12,7 @@ import { AnyViewModel } from './view-model.types';
  * It extends the Disposable interface, allowing for cleanup of resources.
  */
 export interface ViewModelStore<VMBase extends AnyViewModel = AnyViewModel>
-  extends Disposable {
+  extends Cleanable {
   /**
    * Retrieves the ID of a view model based on a given ID or class type.
    * @param idOrClass - The ID or class type of the view model.
@@ -78,4 +77,9 @@ export interface ViewModelStore<VMBase extends AnyViewModel = AnyViewModel>
   generateViewModelId<VM extends VMBase>(
     config: ViewModelGenerateIdConfig<VM>,
   ): string;
+
+  /**
+   * @deprecated Please use {clean()} method
+   */
+  dispose(): void;
 }

@@ -177,6 +177,10 @@ export abstract class AbstractViewModelStore<
     return !!id && this.viewModels.has(id) && !this.mountingViews.has(id);
   }
 
+  clean(): void {
+    this.dispose();
+  }
+
   dispose(): void {
     this.viewModels.clear();
     this.viewModelsByClasses.clear();
