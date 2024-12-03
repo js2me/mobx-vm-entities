@@ -52,7 +52,7 @@
     "@vitest/coverage-istanbul": "2.1.6",
     "eslint": "8.57.0",
     "js2me-eslint-config": "1.0.4",
-    "js2me-exports-post-build-script": "2.0.16",
+    "js2me-exports-post-build-script": "2.0.17",
     "jsdom": "25.0.1",
     "rimraf": "6.0.1",
     "typescript": "5.4.5",
