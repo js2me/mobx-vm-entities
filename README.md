@@ -1,6 +1,9 @@
-# MobX ViewModel power for ReactJS  
+<img src="assets/logo.png" align="right" height="120" alt="logo" />
 
-<img src="assets/logo.png" align="right" height="86" alt="logo" />
+# mobx-view-model  
+
+_MobX ViewModel power for ReactJS_
+
 
 ## What package has   
 
