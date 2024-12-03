@@ -1,7 +1,6 @@
-<div style="width: 100%; display: flex; align-items: center;">
-    <h2 style="margin-right: 20px; flex: 1">MobX ViewModel power for ReactJS</h2>
-    <img src="assets/logo.png" height="86" alt="logo" />
-</div>
+# MobX ViewModel power for ReactJS  
+
+<img src="assets/logo.png" align="right" height="86" alt="logo" />
 
 ## What package has   
 
