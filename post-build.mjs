@@ -14,7 +14,7 @@ postBuildScript({
         publishCommand: 'pnpm publish',
         commitAllCurrentChanges: true,
         createTag: true,
-        githubRepoLink: 'https://github.com/js2me/mobx-vm-entities',
+        githubRepoLink: 'https://github.com/js2me/mobx-view-model',
         cleanupCommand: 'pnpm clean', 
         targetPackageJson,
         otherNames: ['mobx-view-model']

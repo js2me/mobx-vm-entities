@@ -44,7 +44,7 @@ Optional for usage HOC that doing the same thing as `withViewModel`, but fetchin
 ## Simple usage  
 
 ```tsx
-import { ViewModelProps, ViewModelImpl, withViewModel } from 'mobx-vm-entities';
+import { ViewModelProps, ViewModelImpl, withViewModel } from 'mobx-view-model';
 
 export class MyPageVM extends ViewModelImpl<{ payloadA: string }> {
   @observable
@@ -84,7 +84,7 @@ import {
   AbstractViewModelStore,
   ViewModel,
   ViewModelCreateConfig,
-} from 'mobx-vm-entities';
+} from 'mobx-view-model';
 
 export class ViewModelStoreImpl extends AbstractViewModelStore {
   constructor(protected rootStore: RootStore) {
@@ -105,7 +105,7 @@ export class ViewModelStoreImpl extends AbstractViewModelStore {
 
 `view-model.ts`  
 ```ts
-import { ViewModel as ViewModelBase } from 'mobx-vm-entities';
+import { ViewModel as ViewModelBase } from 'mobx-view-model';
 
 export interface ViewModel<
   Payload extends AnyObject = EmptyObject,
@@ -115,7 +115,7 @@ export interface ViewModel<
 
 `view-model.impl.ts`  
 ```ts
-import { AbstractViewModel, AbstractViewModelParams } from 'mobx-vm-entities';
+import { AbstractViewModel, AbstractViewModelParams } from 'mobx-view-model';
 import { ViewModel } from './view-model';
 
 export class ViewModelImpl<
@@ -148,7 +148,7 @@ export class ViewModelImpl<
 ### Add `ViewModelStore` into your `RootStore`   
 
 ```ts
-import { ViewModelStore } from 'mobx-vm-entities';
+import { ViewModelStore } from 'mobx-view-model';
 import { ViewModelStoreImpl } from '@/shared/lib/mobx';
 
 
@@ -165,7 +165,7 @@ export class RootStoreImpl implements RootStore {
 ### Create `View` with `ViewModel`   
 
 ```tsx
-import { ViewModelProps, withViewModel } from 'mobx-vm-entities';
+import { ViewModelProps, withViewModel } from 'mobx-view-model';
 import { ViewModelImpl } from '@/shared/lib/mobx';
 
 export class MyPageVM extends ViewModelImpl {

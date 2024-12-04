@@ -26,12 +26,12 @@
   "license": "MIT",
   "description": "",
   "bugs": {
-    "url": "https://github.com/js2me/mobx-vm-entities/issues"
+    "url": "https://github.com/js2me/mobx-view-model/issues"
   },
-  "homepage": "https://github.com/js2me/mobx-vm-entities",
+  "homepage": "https://github.com/js2me/mobx-view-model",
   "repository": {
     "type": "git",
-    "url": "git://github.com/js2me/mobx-vm-entities"
+    "url": "git://github.com/js2me/mobx-view-model"
   },
   "dependencies": {
     "lodash-es": "^4.17.21",
