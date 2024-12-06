@@ -36,13 +36,13 @@ export abstract class AbstractViewModelStore<
   unmountingViews = observable.set<string>();
 
   constructor() {
-    makeObservable(this, {
-      mountedViewsCount: computed,
-      mount: action,
-      unmount: action,
-      attach: action,
-      detach: action,
-    });
+    computed(this, 'mountedViewsCount');
+    action(this, 'mount');
+    action(this, 'unmount');
+    action(this, 'attach');
+    action(this, 'detach');
+
+    makeObservable(this);
   }
 
   get mountedViewsCount() {

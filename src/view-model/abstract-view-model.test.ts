@@ -1,3 +1,4 @@
+import { reaction } from 'mobx';
 import { describe, expect, it, vi } from 'vitest';
 
 import { AnyObject, EmptyObject, Maybe } from '../utils/types';
@@ -135,5 +136,26 @@ describe('AbstractViewModel', () => {
     vm.mount();
     vm.unmount();
     expect(vm.isMounted).toBe(false);
+  });
+
+  it('isMounted reaction should be work', () => {
+    const vm = new TestAbstractViewModelImpl();
+    const spy = vi.fn();
+
+    const dispose = reaction(
+      () => vm.isMounted,
+      (value) => {
+        spy(value);
+      },
+    );
+
+    vm.mount();
+    vm.unmount();
+
+    expect(spy).toBeCalledTimes(2);
+    expect(spy).nthCalledWith(1, true);
+    expect(spy).nthCalledWith(2, false);
+
+    dispose();
   });
 });

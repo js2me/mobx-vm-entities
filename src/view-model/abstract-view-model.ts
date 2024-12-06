@@ -44,15 +44,15 @@ export abstract class AbstractViewModel<
       this.disposer.dispose();
     });
 
-    makeObservable(this, {
-      isMounted: observable.ref,
-      payload: observable.ref,
-      mount: action.bound,
-      didMount: action,
-      unmount: action.bound,
-      didUnmount: action,
-      setPayload: action,
-    });
+    observable.ref(this, 'isMounted');
+    observable.ref(this, 'payload');
+    action.bound(this, 'mount');
+    action(this, 'didMount');
+    action.bound(this, 'unmount');
+    action(this, 'didUnmount');
+    action(this, 'setPayload');
+
+    makeObservable(this);
   }
 
   protected get viewModels(): ViewModelStore {
