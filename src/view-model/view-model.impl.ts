@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { AnyObject, EmptyObject } from '../utils/types';
+import { AnyObject, EmptyObject, Maybe } from '../utils/types';
 
 import { AbstractViewModel } from './abstract-view-model';
 import { ViewModel } from './view-model';
@@ -13,7 +13,12 @@ export class ViewModelImpl<
   extends AbstractViewModel<Payload, ParentViewModel>
   implements ViewModel<Payload, ParentViewModel>
 {
-  protected getParentViewModel(): ParentViewModel {
-    return this.params.parentViewModel!;
+  protected getParentViewModel(
+    parentViewModelId: Maybe<string>,
+  ): ParentViewModel {
+    return (
+      this.params.parentViewModel ??
+      (this.viewModels?.get(parentViewModelId) as unknown as ParentViewModel)
+    );
   }
 }
