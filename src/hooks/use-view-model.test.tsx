@@ -1,6 +1,6 @@
 import { act, render } from '@testing-library/react';
 import { ReactNode } from 'react';
-import { describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 import { ViewModelsProvider } from '..';
 import { withViewModel } from '../hoc';
@@ -10,6 +10,16 @@ import { TestViewModelImpl } from '../view-model/view-model.impl.test';
 import { useViewModel } from './use-view-model';
 
 describe('withViewModel', () => {
+  let counter = 0;
+
+  const generateId = () => {
+    return (counter++).toString();
+  };
+
+  beforeEach(() => {
+    counter = 0;
+  });
+
   const createDepthComponent = (
     depth: number,
     { accessUsing }: { accessUsing: 'generic' | 'class-ref' | 'id' },
@@ -19,6 +29,7 @@ describe('withViewModel', () => {
     }
     return withViewModel(VM1, {
       id: accessUsing === 'id' ? `depth-${depth}` : undefined,
+      generateId,
     })(({ children }: { children?: ReactNode }) => {
       let model!: VM1;
 
@@ -35,7 +46,7 @@ describe('withViewModel', () => {
             break;
           }
           case 'id': {
-            model = useViewModel(`depth-${depth}`);
+            model = useViewModel<VM1>(`depth-${depth}`);
 
             break;
           }

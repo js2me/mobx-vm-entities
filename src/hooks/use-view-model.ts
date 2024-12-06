@@ -16,4 +16,18 @@ export const useViewModel = <T extends AnyViewModel>(
   }
 
   return (activeViewModel as unknown as T) || model;
+
+  // if (idOrClass == null) {
+  //   if (!activeViewModel) {
+  //     throw new Error('No active view model');
+  //   }
+
+  //   return activeViewModel as unknown as T;
+  // }
+
+  // if (!model) {
+  //   throw console.error('view model not found for', idOrClass);
+  // }
+
+  // return model;
 };
