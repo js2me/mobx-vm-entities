@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Disposer, IDisposer } from 'disposer-util';
 import { isEqual } from 'lodash-es';
-import { action, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 import { AnyObject, EmptyObject, Maybe } from '../utils/types';
 
@@ -45,6 +45,7 @@ export abstract class AbstractViewModel<
     });
 
     observable.ref(this, 'isMounted');
+    computed(this, 'parentViewModel');
     observable.ref(this, 'payload');
     action.bound(this, 'mount');
     action(this, 'didMount');
