@@ -10,15 +10,44 @@ import { TestViewModelImpl } from '../view-model/view-model.impl.test';
 import { useViewModel } from './use-view-model';
 
 describe('withViewModel', () => {
-  const createDepthComponent = (depth: number) => {
+  const createDepthComponent = (
+    depth: number,
+    { accessUsing }: { accessUsing: 'generic' | 'class-ref' | 'id' },
+  ) => {
     class VM1 extends TestViewModelImpl {
       depth = `${depth}`;
     }
-    return withViewModel(VM1)(({ children }: { children?: ReactNode }) => {
-      const model = useViewModel<VM1>();
+    return withViewModel(VM1, {
+      id: accessUsing === 'id' ? `depth-${depth}` : undefined,
+    })(({ children }: { children?: ReactNode }) => {
+      let model!: VM1;
+
+      if (accessUsing) {
+        switch (accessUsing) {
+          case 'generic': {
+            model = useViewModel<VM1>();
+
+            break;
+          }
+          case 'class-ref': {
+            model = useViewModel(VM1);
+
+            break;
+          }
+          case 'id': {
+            model = useViewModel(`depth-${depth}`);
+
+            break;
+          }
+          // No default
+        }
+      }
+
       return (
-        <div>
-          <span>{`depth: ${model.depth}`}</span>
+        <div
+          data-testid={`depth-component-(depth:${depth}, accessUsing:${accessUsing})`}
+        >
+          <span>{`model-id: ${model.id}, depth: ${model.depth}`}</span>
           {children}
         </div>
       );
@@ -31,343 +60,74 @@ describe('withViewModel', () => {
     return <ViewModelsProvider value={vmStore}>{children}</ViewModelsProvider>;
   };
 
-  test('renders (1 depth)', async () => {
-    const Component = createDepthComponent(1);
-    const { container } = await act(() => render(<Component />));
-    expect(container.firstChild).toMatchInlineSnapshot(`
-      <div>
-        <span>
-          depth: 1
-        </span>
-      </div>
-    `);
+  const createTests = (
+    accessUsing: 'generic' | 'class-ref' | 'id',
+    withVmStore?: boolean,
+  ) => {
+    const createDepthTest = (depth: number) => {
+      const depthsComponents = Array.from({ length: depth })
+        .fill(null)
+        .map((_, i) => {
+          const componentDepth = i + 1;
+          return createDepthComponent(componentDepth, { accessUsing });
+        });
+
+      test(`renders (${depth} depth)`, async () => {
+        const WrappedDepthComponent = () => {
+          const reversed = [...depthsComponents].reverse();
+
+          let lastRenderedNode: any;
+
+          reversed.forEach((Component) => {
+            if (lastRenderedNode) {
+              lastRenderedNode = <Component>{lastRenderedNode}</Component>;
+            } else {
+              lastRenderedNode = <Component />;
+            }
+          });
+
+          return lastRenderedNode;
+        };
+        const { container } = await act(async () =>
+          render(<WrappedDepthComponent />, {
+            wrapper: withVmStore ? VMStoreWrapper : undefined,
+          }),
+        );
+
+        expect(container.firstChild).toMatchFileSnapshot(
+          `../../tests/snapshots/hooks/use-view-model/access-using-${accessUsing}/${withVmStore ? 'with-view-model-store/' : ''}${depth}-depth.html`,
+        );
+      });
+    };
+
+    Array.from({ length: 10 })
+      .fill(null)
+      .forEach((_, i) => {
+        const depth = i + 1;
+        if (depth === undefined) return;
+        createDepthTest(depth);
+      });
+  };
+
+  describe('access using generic', () => {
+    createTests('generic');
+  });
+  describe('access using class reference', () => {
+    createTests('class-ref');
+  });
+  describe('access using view model id', () => {
+    createTests('id');
   });
 
-  test('renders (2 depths)', async () => {
-    const Component1 = createDepthComponent(1);
-    const Component2 = createDepthComponent(2);
-
-    const { container } = await act(() =>
-      render(
-        <Component1>
-          <Component2 />
-        </Component1>,
-      ),
-    );
-    expect(container.firstChild).toMatchInlineSnapshot(`
-      <div>
-        <span>
-          depth: 1
-        </span>
-        <div>
-          <span>
-            depth: 2
-          </span>
-        </div>
-      </div>
-    `);
-  });
-
-  test('renders (3 depths)', async () => {
-    const Component1 = createDepthComponent(1);
-    const Component2 = createDepthComponent(2);
-    const Component3 = createDepthComponent(3);
-
-    const { container } = await act(() =>
-      render(
-        <Component1>
-          <Component2>
-            <Component3 />
-          </Component2>
-        </Component1>,
-      ),
-    );
-
-    expect(container.firstChild).toMatchInlineSnapshot(`
-      <div>
-        <span>
-          depth: 1
-        </span>
-        <div>
-          <span>
-            depth: 2
-          </span>
-          <div>
-            <span>
-              depth: 3
-            </span>
-          </div>
-        </div>
-      </div>
-    `);
-  });
-
-  test('renders (4 depths)', async () => {
-    const Component1 = createDepthComponent(1);
-    const Component2 = createDepthComponent(2);
-    const Component3 = createDepthComponent(3);
-    const Component4 = createDepthComponent(4);
-
-    const { container } = await act(() =>
-      render(
-        <Component1>
-          <Component2>
-            <Component3>
-              <Component4 />
-            </Component3>
-          </Component2>
-        </Component1>,
-      ),
-    );
-    expect(container.firstChild).toMatchInlineSnapshot(`
-      <div>
-        <span>
-          depth: 1
-        </span>
-        <div>
-          <span>
-            depth: 2
-          </span>
-          <div>
-            <span>
-              depth: 3
-            </span>
-            <div>
-              <span>
-                depth: 4
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    `);
-  });
-
-  test('renders (5 depths)', async () => {
-    const Component1 = createDepthComponent(1);
-    const Component2 = createDepthComponent(2);
-    const Component3 = createDepthComponent(3);
-    const Component4 = createDepthComponent(4);
-    const Component5 = createDepthComponent(5);
-
-    const { container } = await act(() =>
-      render(
-        <Component1>
-          <Component2>
-            <Component3>
-              <Component4>
-                <Component5 />
-              </Component4>
-            </Component3>
-          </Component2>
-        </Component1>,
-      ),
-    );
-    expect(container.firstChild).toMatchInlineSnapshot(`
-      <div>
-        <span>
-          depth: 1
-        </span>
-        <div>
-          <span>
-            depth: 2
-          </span>
-          <div>
-            <span>
-              depth: 3
-            </span>
-            <div>
-              <span>
-                depth: 4
-              </span>
-              <div>
-                <span>
-                  depth: 5
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `);
-  });
-
-  describe('with using ViewModelStore', () => {
-    test('renders (1 depth)', async () => {
-      const Component = createDepthComponent(1);
-      const { container } = await act(async () =>
-        render(<Component />, {
-          wrapper: VMStoreWrapper,
-        }),
-      );
-      expect(container.firstChild).toMatchInlineSnapshot(`
-        <div>
-          <span>
-            depth: 1
-          </span>
-        </div>
-      `);
+  describe('with ViewModelStore', () => {
+    describe('access using generic', () => {
+      createTests('generic', true);
     });
-
-    test('renders (2 depths)', async () => {
-      const Component1 = createDepthComponent(1);
-      const Component2 = createDepthComponent(2);
-
-      const { container } = await act(async () =>
-        render(
-          <Component1>
-            <Component2 />
-          </Component1>,
-          {
-            wrapper: VMStoreWrapper,
-          },
-        ),
-      );
-      expect(container.firstChild).toMatchInlineSnapshot(`
-        <div>
-          <span>
-            depth: 1
-          </span>
-          <div>
-            <span>
-              depth: 2
-            </span>
-          </div>
-        </div>
-      `);
+    describe('access using class reference', () => {
+      createTests('class-ref', true);
     });
-
-    test('renders (3 depths)', async () => {
-      const Component1 = createDepthComponent(1);
-      const Component2 = createDepthComponent(2);
-      const Component3 = createDepthComponent(3);
-
-      const { container } = await act(async () =>
-        render(
-          <Component1>
-            <Component2>
-              <Component3 />
-            </Component2>
-          </Component1>,
-          {
-            wrapper: VMStoreWrapper,
-          },
-        ),
-      );
-
-      expect(container.firstChild).toMatchInlineSnapshot(`
-        <div>
-          <span>
-            depth: 1
-          </span>
-          <div>
-            <span>
-              depth: 2
-            </span>
-            <div>
-              <span>
-                depth: 3
-              </span>
-            </div>
-          </div>
-        </div>
-      `);
-    });
-
-    test('renders (4 depths)', async () => {
-      const Component1 = createDepthComponent(1);
-      const Component2 = createDepthComponent(2);
-      const Component3 = createDepthComponent(3);
-      const Component4 = createDepthComponent(4);
-
-      const { container } = await act(async () =>
-        render(
-          <Component1>
-            <Component2>
-              <Component3>
-                <Component4 />
-              </Component3>
-            </Component2>
-          </Component1>,
-          {
-            wrapper: VMStoreWrapper,
-          },
-        ),
-      );
-      expect(container.firstChild).toMatchInlineSnapshot(`
-        <div>
-          <span>
-            depth: 1
-          </span>
-          <div>
-            <span>
-              depth: 2
-            </span>
-            <div>
-              <span>
-                depth: 3
-              </span>
-              <div>
-                <span>
-                  depth: 4
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      `);
-    });
-
-    test('renders (5 depths)', async () => {
-      const Component1 = createDepthComponent(1);
-      const Component2 = createDepthComponent(2);
-      const Component3 = createDepthComponent(3);
-      const Component4 = createDepthComponent(4);
-      const Component5 = createDepthComponent(5);
-
-      const { container } = await act(async () =>
-        render(
-          <Component1>
-            <Component2>
-              <Component3>
-                <Component4>
-                  <Component5 />
-                </Component4>
-              </Component3>
-            </Component2>
-          </Component1>,
-          {
-            wrapper: VMStoreWrapper,
-          },
-        ),
-      );
-      expect(container.firstChild).toMatchInlineSnapshot(`
-        <div>
-          <span>
-            depth: 1
-          </span>
-          <div>
-            <span>
-              depth: 2
-            </span>
-            <div>
-              <span>
-                depth: 3
-              </span>
-              <div>
-                <span>
-                  depth: 4
-                </span>
-                <div>
-                  <span>
-                    depth: 5
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `);
+    describe('access using view model id', () => {
+      createTests('id', true);
     });
   });
 });

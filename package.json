@@ -11,6 +11,7 @@
     "pub:minor": "PUBLISH=true PUBLISH_VERSION=minor pnpm run build",
     "pub:major": "PUBLISH=true PUBLISH_VERSION=major pnpm run build",
     "test": "vitest run",
+    "test:update-snapshots": "vitest -u",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
     "dev": "pnpm test:watch"

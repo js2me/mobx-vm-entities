@@ -21,10 +21,14 @@
       "./node_modules/@types/", "./types", "./node_modules"
     ],
     "noEmit": false,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "#/*": ["./*"],
+    }
   },
   "include": [
     "src/**/*.test.ts",
+    "tests",
     "src/**/*.test.tsx",
     "node_modules"
   ],
