@@ -1,5 +1,5 @@
 import { act, render } from '@testing-library/react';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { beforeEach, describe, expect, test } from 'vitest';
 
 import { ViewModelsProvider } from '..';
@@ -65,9 +65,9 @@ describe('withViewModel', () => {
     });
   };
 
-  const vmStore = new TestViewModelStoreImpl();
-
   const VMStoreWrapper = ({ children }: { children?: ReactNode }) => {
+    const [vmStore] = useState(() => new TestViewModelStoreImpl());
+
     return <ViewModelsProvider value={vmStore}>{children}</ViewModelsProvider>;
   };
 

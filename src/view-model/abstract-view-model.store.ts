@@ -21,7 +21,7 @@ export abstract class AbstractViewModelStore<
 > implements ViewModelStore<VMBase>
 {
   viewModels = observable.map<string, VMBase>();
-  viewModelsByClasses = observable.map<string, string[]>();
+  viewModelsByClasses = observable.map<Class<any, any>, string[]>();
 
   instanceAttachedCount = new Map<string, number>();
 
@@ -73,12 +73,11 @@ export abstract class AbstractViewModelStore<
       return idOrClass;
     }
 
-    const className = idOrClass.name;
-    const viewModels = this.viewModelsByClasses.get(className) || [];
+    const viewModels = this.viewModelsByClasses.get(idOrClass) || [];
 
     if (process.env.NODE_ENV !== 'production' && viewModels.length > 1) {
       console.warn(
-        `Found more than 1 view model with the same identifier "${className}". Last instance will been returned`,
+        `Found more than 1 view model with the same identifier "${idOrClass.name}". Last instance will been returned`,
       );
     }
 
@@ -131,12 +130,12 @@ export abstract class AbstractViewModelStore<
     }
 
     this.viewModels.set(model.id, model);
-    const constructor = (model as any).constructor;
+    const constructor = (model as any).constructor as Class<any, any>;
 
-    if (this.viewModelsByClasses.has(constructor.name)) {
-      this.viewModelsByClasses.get(constructor.name)!.push(model.id);
+    if (this.viewModelsByClasses.has(constructor)) {
+      this.viewModelsByClasses.get(constructor)!.push(model.id);
     } else {
-      this.viewModelsByClasses.set(constructor.name, [model.id]);
+      this.viewModelsByClasses.set(constructor, [model.id]);
     }
 
     await this.mount(model);
@@ -153,18 +152,18 @@ export abstract class AbstractViewModelStore<
       if (attachedCount - 1 <= 0) {
         this.instanceAttachedCount.delete(model.id);
 
-        const constructor = (model as any).constructor;
+        const constructor = (model as any).constructor as Class<any, any>;
 
         await this.unmount(model);
 
         runInAction(() => {
           this.viewModels.delete(id);
 
-          if (this.viewModelsByClasses.has(constructor.name)) {
+          if (this.viewModelsByClasses.has(constructor)) {
             this.viewModelsByClasses.set(
-              constructor.name,
+              constructor,
               this.viewModelsByClasses
-                .get(constructor.name)!
+                .get(constructor)!
                 .filter((id) => id !== model.id),
             );
           }

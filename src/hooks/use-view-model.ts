@@ -11,23 +11,25 @@ export const useViewModel = <T extends AnyViewModel>(
   const activeViewModel = useContext(ActiveViewModelContext);
   const model = viewModels?.get<T>(idOrClass);
 
-  if (!activeViewModel && !model) {
-    throw new Error('No model for view');
+  if (idOrClass == null || !viewModels) {
+    if (process.env.NODE_ENV !== 'production' && !viewModels) {
+      console.warn(
+        'unabled to get access to view model by id or class name withouting using ViewModelsStore. Last active view model will be returned',
+      );
+    }
+
+    if (!activeViewModel) {
+      throw new Error('No active view model');
+    }
+
+    return activeViewModel as unknown as T;
   }
 
-  return (activeViewModel as unknown as T) || model;
+  if (!model) {
+    throw new Error(
+      `View model not found for ${typeof idOrClass === 'string' ? idOrClass : idOrClass.name}`,
+    );
+  }
 
-  // if (idOrClass == null) {
-  //   if (!activeViewModel) {
-  //     throw new Error('No active view model');
-  //   }
-
-  //   return activeViewModel as unknown as T;
-  // }
-
-  // if (!model) {
-  //   throw console.error('view model not found for', idOrClass);
-  // }
-
-  // return model;
+  return model;
 };
