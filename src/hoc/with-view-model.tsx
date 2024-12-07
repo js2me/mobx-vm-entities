@@ -139,10 +139,18 @@ export function withViewModel(
       const instance: ViewModel = instances.get(id)!;
 
       useEffect(() => {
-        viewModels?.attach(instance);
+        if (viewModels) {
+          viewModels.attach(instance);
+        } else {
+          instance.mount();
+        }
 
         return () => {
-          viewModels?.detach(id);
+          if (viewModels) {
+            viewModels.detach(id);
+          } else {
+            instance.unmount();
+          }
           instances.delete(id);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
