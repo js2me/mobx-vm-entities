@@ -1,8 +1,8 @@
-import { act, render } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { ReactNode, useState } from 'react';
 import { beforeEach, describe, expect, test } from 'vitest';
 
-import { ViewModelsProvider } from '..';
+import { ViewModelStore, ViewModelsProvider } from '..';
 import { withViewModel } from '../hoc';
 import { TestViewModelStoreImpl } from '../view-model/abstract-view-model.store.test';
 import { TestViewModelImpl } from '../view-model/view-model.impl.test';
@@ -65,10 +65,12 @@ describe('withViewModel', () => {
     });
   };
 
-  const VMStoreWrapper = ({ children }: { children?: ReactNode }) => {
-    const [vmStore] = useState(() => new TestViewModelStoreImpl());
-
-    return <ViewModelsProvider value={vmStore}>{children}</ViewModelsProvider>;
+  const createVMStoreWrapper = (vmStore: ViewModelStore) => {
+    return ({ children }: { children?: ReactNode }) => {
+      return (
+        <ViewModelsProvider value={vmStore}>{children}</ViewModelsProvider>
+      );
+    };
   };
 
   const createTests = (
@@ -84,6 +86,8 @@ describe('withViewModel', () => {
         });
 
       test(`renders (${depth} depth)`, async () => {
+        const vmStore = new TestViewModelStoreImpl();
+
         const WrappedDepthComponent = () => {
           const reversed = [...depthsComponents].reverse();
 
@@ -101,7 +105,7 @@ describe('withViewModel', () => {
         };
         const { container } = await act(async () =>
           render(<WrappedDepthComponent />, {
-            wrapper: withVmStore ? VMStoreWrapper : undefined,
+            wrapper: withVmStore ? createVMStoreWrapper(vmStore) : undefined,
           }),
         );
 
@@ -139,6 +143,101 @@ describe('withViewModel', () => {
     });
     describe('access using view model id', () => {
       createTests('id', true);
+    });
+  });
+
+  describe('scenarios', () => {
+    test('container renders VM with fixed id and some child with dynamic id', async ({
+      task,
+    }) => {
+      const vmStore = new TestViewModelStoreImpl();
+
+      class LayoutVM extends TestViewModelImpl {}
+
+      const Layout = withViewModel(LayoutVM, {
+        id: 'layout',
+      })(({ children }: { children?: ReactNode }) => (
+        <div data-testid={'layout'}>{children}</div>
+      ));
+
+      class ChildVM extends TestViewModelImpl {}
+
+      const Child = withViewModel(ChildVM)(() => (
+        <div data-testid={'child'}></div>
+      ));
+
+      const App = () => {
+        return (
+          <div>
+            <Layout>
+              <Child />
+            </Layout>
+          </div>
+        );
+      };
+
+      const { container } = await act(async () =>
+        render(<App />, { wrapper: createVMStoreWrapper(vmStore) }),
+      );
+
+      expect(container.firstChild).toMatchFileSnapshot(
+        `../../tests/snapshots/hooks/use-view-model/scenarios/${task.name}.html`,
+      );
+    });
+    test('container remounts VM with fixed id and some child with dynamic id', async ({
+      task,
+    }) => {
+      const vmStore = new TestViewModelStoreImpl();
+
+      class LayoutVM extends TestViewModelImpl {}
+
+      const Layout = withViewModel(LayoutVM, {
+        id: 'layout',
+        fallback: () => <div data-testid={'layout-fallback'}> </div>,
+      })(({ children }: { children?: ReactNode }) => (
+        <div data-testid={'layout'}>{children}</div>
+      ));
+
+      class ChildVM extends TestViewModelImpl {}
+
+      const Child = withViewModel(ChildVM, {
+        fallback: () => <div data-testid={'child-fallback'}> </div>,
+      })(() => <div data-testid={'child'}></div>);
+
+      const App = () => {
+        const [key, setKey] = useState(0);
+
+        return (
+          <div>
+            <button
+              data-testid={'click'}
+              onClick={() => {
+                console.info('button click');
+                setKey(key + 1);
+              }}
+            >
+              click
+            </button>
+            <Layout key={key}>
+              <Child />
+            </Layout>
+          </div>
+        );
+      };
+
+      const { container } = await act(async () =>
+        render(<App />, { wrapper: createVMStoreWrapper(vmStore) }),
+      );
+
+      const button = screen.getByTestId('click');
+
+      await act(async () => {
+        fireEvent.click(button);
+      });
+
+      expect(container.firstChild).toMatchFileSnapshot(
+        `../../tests/snapshots/hooks/use-view-model/scenarios/${task.name}.html`,
+      );
     });
   });
 });

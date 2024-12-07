@@ -154,9 +154,7 @@ export abstract class AbstractViewModelStore<
 
         const constructor = (model as any).constructor as Class<any, any>;
 
-        await this.unmount(model);
-
-        runInAction(() => {
+        await runInAction(async () => {
           this.viewModels.delete(id);
 
           if (this.viewModelsByClasses.has(constructor)) {
@@ -167,6 +165,8 @@ export abstract class AbstractViewModelStore<
                 .filter((id) => id !== model.id),
             );
           }
+
+          await this.unmount(model);
         });
       }
     }
