@@ -43,14 +43,14 @@ export class ViewModelImpl<
     makeObservable(this);
   }
 
-  protected get viewModels(): ViewModelStore<typeof this> {
+  protected get viewModels(): ViewModelStore {
     if (process.env.NODE_ENV !== 'production' && !this.params.viewModels) {
       console.warn(
         'accessing to viewModels is not possible. [viewModels] param is not setted during to creating instance AbstractViewModel',
       );
     }
 
-    return this.params.viewModels! as ViewModelStore<typeof this>;
+    return this.params.viewModels!;
   }
 
   /**
