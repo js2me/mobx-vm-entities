@@ -13,7 +13,7 @@ export const useViewModel = <T extends AnyViewModel>(
   if (lookupPayload == null || !viewModels) {
     if (process.env.NODE_ENV !== 'production' && !viewModels) {
       console.warn(
-        'unabled to get access to view model by id or class name withouting using ViewModelsStore. Last active view model will be returned',
+        'unable to get access to view model by id or class name withouting using ViewModelsStore. Last active view model will be returned',
       );
     }
 
