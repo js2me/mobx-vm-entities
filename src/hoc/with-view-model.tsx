@@ -129,6 +129,8 @@ export function withViewModel(
           component: ConnectedViewModel,
         };
 
+        viewModels?.processCreateConfig(configCreate);
+
         const instance =
           config?.factory?.(configCreate) ??
           viewModels?.createViewModel<any>(configCreate) ??

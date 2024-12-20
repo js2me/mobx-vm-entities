@@ -7,11 +7,11 @@ _MobX ViewModel power for ReactJS_
 
 ## What package has   
 
-### [`ViewModelImpl`](src/view-model/view-model.impl.ts), [`AbstractViewModel`](src/view-model/abstract-view-model.ts), [`ViewModel` ](src/view-model/view-model.ts) 
+### [`ViewModelImpl`](src/view-model/view-model.impl.ts), [`ViewModel`](src/view-model/view-model.ts)   
 It is a class that helps to manage state and lifecycle of a component in **React**.  
 
 
-### [`ViewModelStoreImpl`](src/view-model/view-model.store.impl.ts), [`AbstractViewModelStore`](src/view-model/abstract-view-model.store.ts), [`ViewModelStore`](src/view-model/view-model.store.ts)  
+### [`ViewModelStoreImpl`](src/view-model/view-model.store.impl.ts), [`ViewModelStore`](src/view-model/view-model.store.ts)  
 It is store for managing view models.  
 P.S not required entity for targeted usage of this package, but can be helpful for accessing view models from everywhere by view model id or view model class name.   
 

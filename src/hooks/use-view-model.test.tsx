@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, test } from 'vitest';
 
 import { ViewModelStore, ViewModelStoreImpl, ViewModelsProvider } from '..';
 import { withViewModel } from '../hoc';
-import { TestViewModelImpl } from '../view-model/view-model.impl.test';
+import { ViewModelMock } from '../view-model/view-model.impl.test';
 
 import { useViewModel } from './use-view-model';
 
@@ -31,7 +31,7 @@ describe('withViewModel', () => {
       getParent?: boolean;
     },
   ) => {
-    class VM1 extends TestViewModelImpl {
+    class VM1 extends ViewModelMock {
       depth = `${depth}`;
     }
 
@@ -222,7 +222,7 @@ describe('withViewModel', () => {
     }) => {
       const vmStore = new ViewModelStoreImpl();
 
-      class LayoutVM extends TestViewModelImpl {}
+      class LayoutVM extends ViewModelMock {}
 
       const Layout = withViewModel(LayoutVM, {
         id: 'layout',
@@ -230,7 +230,7 @@ describe('withViewModel', () => {
         <div data-testid={'layout'}>{children}</div>
       ));
 
-      class ChildVM extends TestViewModelImpl {}
+      class ChildVM extends ViewModelMock {}
 
       const Child = withViewModel(ChildVM)(() => (
         <div data-testid={'child'}></div>
@@ -259,7 +259,7 @@ describe('withViewModel', () => {
     }) => {
       const vmStore = new ViewModelStoreImpl();
 
-      class LayoutVM extends TestViewModelImpl {}
+      class LayoutVM extends ViewModelMock {}
 
       const Layout = withViewModel(LayoutVM, {
         id: 'layout',
@@ -268,7 +268,7 @@ describe('withViewModel', () => {
         <div data-testid={'layout'}>{children}</div>
       ));
 
-      class ChildVM extends TestViewModelImpl {}
+      class ChildVM extends ViewModelMock {}
 
       const Child = withViewModel(ChildVM, {
         fallback: () => <div data-testid={'child-fallback'}> </div>,

@@ -72,6 +72,16 @@ export interface ViewModelStore<VMBase extends AnyViewModel = AnyViewModel>
   createViewModel<VM extends VMBase>(config: ViewModelCreateConfig<VM>): VM;
 
   /**
+   * Process the configuration for creating a view model.
+   * This method is called just before creating a new view model instance.
+   * It's useful for initializing the configuration, like linking components to the view model class.
+   * @param config - The configuration for creating the view model.
+   */
+  processCreateConfig<VM extends VMBase>(
+    config: ViewModelCreateConfig<VM>,
+  ): void;
+
+  /**
    * Links React components with view model class.
    * @param VM - The view model class to link to.
    * @param components - The components to link.
@@ -91,7 +101,7 @@ export interface ViewModelStore<VMBase extends AnyViewModel = AnyViewModel>
   ): string;
 
   /**
-   * @deprecated Please use {clean()} method
+   * @deprecated Removed since 5.0.0. Use {clean} instead
    */
   dispose(): void;
 }

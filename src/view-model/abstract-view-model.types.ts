@@ -1,16 +1,11 @@
-import { AnyObject, EmptyObject, Maybe } from '../utils/types';
+import { AnyObject, EmptyObject } from '../utils/types';
 
-import { ViewModelStore } from './view-model.store';
-import { AnyViewModel } from './view-model.types';
+import { AnyViewModel, ViewModelParams } from './view-model.types';
 
+/**
+ * @deprecated removed since 5.0.0 version. Please use {@link ViewModelParams}
+ */
 export interface AbstractViewModelParams<
   Payload extends AnyObject = EmptyObject,
   ParentViewModel extends AnyViewModel | null = null,
-> {
-  id: string;
-  payload: Payload;
-  viewModels?: Maybe<ViewModelStore>;
-  parentViewModelId?: Maybe<string>;
-  parentViewModel?: Maybe<ParentViewModel>;
-  ctx?: AnyObject;
-}
+> extends ViewModelParams<Payload, ParentViewModel> {}

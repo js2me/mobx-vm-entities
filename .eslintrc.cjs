@@ -8,7 +8,8 @@ module.exports = {
       'error',
       { ignore: Object.keys(packageJson.peerDependencies) },
     ],
-    'unicorn/prevent-abbreviations': 'off'
+    'unicorn/prevent-abbreviations': 'off',
+    'sonarjs/deprecation': 'off'
   },
   overrides: [
     {

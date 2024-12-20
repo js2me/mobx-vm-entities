@@ -5,7 +5,7 @@ import { describe, expect, test, vi } from 'vitest';
 
 import { ViewModelStore, ViewModelStoreImpl, ViewModelsProvider } from '..';
 import { createCounter } from '../utils';
-import { TestViewModelImpl } from '../view-model/view-model.impl.test';
+import { ViewModelMock } from '../view-model/view-model.impl.test';
 
 import { ViewModelProps, withViewModel } from './with-view-model';
 
@@ -16,7 +16,7 @@ const createIdGenerator = (prefix?: string) => {
 
 describe('withViewModel', () => {
   test('renders', () => {
-    class VM extends TestViewModelImpl {}
+    class VM extends ViewModelMock {}
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
@@ -29,7 +29,7 @@ describe('withViewModel', () => {
   });
 
   test('renders nesting', () => {
-    const Component1 = withViewModel(TestViewModelImpl)(({
+    const Component1 = withViewModel(ViewModelMock)(({
       children,
     }: {
       children?: ReactNode;
@@ -41,7 +41,7 @@ describe('withViewModel', () => {
         </div>
       );
     });
-    const Component2 = withViewModel(TestViewModelImpl)(() => {
+    const Component2 = withViewModel(ViewModelMock)(() => {
       return <div>child</div>;
     });
 
@@ -66,7 +66,7 @@ describe('withViewModel', () => {
   });
 
   test('renders twice', async () => {
-    class VM extends TestViewModelImpl {}
+    class VM extends ViewModelMock {}
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
@@ -85,7 +85,7 @@ describe('withViewModel', () => {
   });
 
   test('renders with fixed id', () => {
-    class VM extends TestViewModelImpl {}
+    class VM extends ViewModelMock {}
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
@@ -96,7 +96,7 @@ describe('withViewModel', () => {
   });
 
   test('renders twice with fixed id', async () => {
-    class VM extends TestViewModelImpl {}
+    class VM extends ViewModelMock {}
     const View = ({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     };
@@ -112,7 +112,7 @@ describe('withViewModel', () => {
   });
 
   test('View should be only mounted (renders only 1 time)', () => {
-    class VM extends TestViewModelImpl {}
+    class VM extends ViewModelMock {}
     const View = vi.fn(({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     });
@@ -125,7 +125,7 @@ describe('withViewModel', () => {
   });
 
   test('withViewModel wrapper should by only mounted (renders only 1 time)', () => {
-    class VM extends TestViewModelImpl {}
+    class VM extends ViewModelMock {}
     const View = vi.fn(({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     });
@@ -142,7 +142,7 @@ describe('withViewModel', () => {
   });
 
   test('View should be updated when payload is changed', async () => {
-    class VM extends TestViewModelImpl<{ counter: number }> {}
+    class VM extends ViewModelMock<{ counter: number }> {}
     const View = vi.fn(({ model }: ViewModelProps<VM>) => {
       return <div>{`hello ${model.id}`}</div>;
     });
@@ -178,9 +178,9 @@ describe('withViewModel', () => {
   });
 
   test('View should have actual payload state', async () => {
-    let vm: TestViewModelImpl<{ counter: number }> | null;
+    let vm: ViewModelMock<{ counter: number }> | null;
 
-    class VM extends TestViewModelImpl<{ counter: number }> {
+    class VM extends ViewModelMock<{ counter: number }> {
       constructor(...args: any[]) {
         super(...args);
         vm = this;
@@ -224,7 +224,7 @@ describe('withViewModel', () => {
 
   describe('with ViewModelStore', () => {
     test('renders', async () => {
-      class VM extends TestViewModelImpl {}
+      class VM extends ViewModelMock {}
       const View = observer(({ model }: ViewModelProps<VM>) => {
         return (
           <div>
@@ -255,7 +255,7 @@ describe('withViewModel', () => {
     test('able to get access to view model store', async () => {
       let viewModels: ViewModelStore = null as any;
 
-      class VM extends TestViewModelImpl {
+      class VM extends ViewModelMock {
         constructor(params: any) {
           super(params);
           viewModels = params.viewModels;
