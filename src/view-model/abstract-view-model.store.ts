@@ -79,13 +79,15 @@ export abstract class AbstractViewModelStore<
     }
   }
 
-  linkComponent(
-    component: ComponentWithViewModel<VMBase, any>,
+  linkComponents(
     VM: Class<VMBase>,
+    ...components: Maybe<ComponentWithViewModel<VMBase, any>>[]
   ): void {
-    if (!this.linkedComponentVMClasses.has(component)) {
-      this.linkedComponentVMClasses.set(component, VM);
-    }
+    components.forEach((component) => {
+      if (component && !this.linkedComponentVMClasses.has(component)) {
+        this.linkedComponentVMClasses.set(component, VM);
+      }
+    });
   }
 
   getId<T extends VMBase>(

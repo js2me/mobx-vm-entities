@@ -72,13 +72,13 @@ export interface ViewModelStore<VMBase extends AnyViewModel = AnyViewModel>
   createViewModel<VM extends VMBase>(config: ViewModelCreateConfig<VM>): VM;
 
   /**
-   * Links a React component with view model class.
-   * @param component - The component to link.
+   * Links React components with view model class.
    * @param VM - The view model class to link to.
+   * @param components - The components to link.
    */
-  linkComponent(
-    component: ComponentWithViewModel<VMBase, any>,
+  linkComponents(
     VM: Class<VMBase>,
+    ...components: Maybe<ComponentWithViewModel<VMBase, any>>[]
   ): void;
 
   /**
