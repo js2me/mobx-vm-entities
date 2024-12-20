@@ -22,31 +22,38 @@ export abstract class AbstractViewModelStore<
   VMBase extends AnyViewModel = AnyViewModel,
 > implements ViewModelStore<VMBase>
 {
-  protected viewModels = observable.map<string, VMBase>();
-  protected linkedComponentVMClasses = new Map<
+  protected viewModels: Map<string, VMBase>;
+  protected linkedComponentVMClasses: Map<
     ComponentWithViewModel<VMBase, any>,
     Class<VMBase>
-  >();
-  protected viewModelIdsByClasses = observable.map<Class<VMBase>, string[]>();
-
-  protected instanceAttachedCount = new Map<string, number>();
+  >;
+  protected viewModelIdsByClasses: Map<Class<VMBase>, string[]>;
+  protected instanceAttachedCount: Map<string, number>;
 
   /**
    * Views waiting for mount
    */
-  protected mountingViews = observable.set<string>();
+  protected mountingViews: Set<string>;
 
   /**
    * Views waiting for unmount
    */
-  protected unmountingViews = observable.set<string>();
+  protected unmountingViews: Set<string>;
 
   constructor() {
+    this.viewModels = observable.map([], { deep: false });
+    this.linkedComponentVMClasses = observable.map([], { deep: false });
+    this.viewModelIdsByClasses = observable.map([], { deep: false });
+    this.instanceAttachedCount = observable.map([], { deep: false });
+    this.mountingViews = observable.set([], { deep: false });
+    this.unmountingViews = observable.set([], { deep: false });
+
     computed(this, 'mountedViewsCount');
     action(this, 'mount');
     action(this, 'unmount');
     action(this, 'attach');
     action(this, 'detach');
+    action(this, 'linkComponent');
 
     makeObservable(this);
   }
