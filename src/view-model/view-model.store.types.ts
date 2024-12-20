@@ -1,5 +1,6 @@
 import { ComponentType } from 'react';
 
+import { ComponentWithViewModel } from '../hoc';
 import { AnyObject, Class, Maybe } from '../utils/types';
 
 import { AbstractViewModelParams } from './abstract-view-model.types';
@@ -20,4 +21,10 @@ export interface ViewModelCreateConfig<VM extends AnyViewModel>
   VM: Class<VM>;
   fallback?: ComponentType;
   instances: Map<string, ViewModel>;
+  component: ComponentWithViewModel<AnyViewModel, any>;
 }
+
+export type ViewModelLookup<T extends AnyViewModel> =
+  | AnyViewModel['id']
+  | Class<T>
+  | ComponentWithViewModel<T, any>;

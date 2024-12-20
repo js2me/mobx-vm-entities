@@ -2,9 +2,8 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { ReactNode, useState } from 'react';
 import { beforeEach, describe, expect, test } from 'vitest';
 
-import { ViewModelStore, ViewModelsProvider } from '..';
+import { ViewModelStore, ViewModelStoreImpl, ViewModelsProvider } from '..';
 import { withViewModel } from '../hoc';
-import { TestViewModelStoreImpl } from '../view-model/abstract-view-model.store.test';
 import { TestViewModelImpl } from '../view-model/view-model.impl.test';
 
 import { useViewModel } from './use-view-model';
@@ -22,12 +21,15 @@ describe('withViewModel', () => {
 
   const createDepthComponent = (
     depth: number,
-    { accessUsing }: { accessUsing: 'generic' | 'class-ref' | 'id' },
+    {
+      accessUsing,
+    }: { accessUsing: 'generic' | 'class-ref' | 'id' | 'component-ref' },
   ) => {
     class VM1 extends TestViewModelImpl {
       depth = `${depth}`;
     }
-    return withViewModel(VM1, {
+
+    const Component = withViewModel(VM1, {
       id: accessUsing === 'id' ? `depth-${depth}` : undefined,
       generateId,
     })(({ children }: { children?: ReactNode }) => {
@@ -42,6 +44,11 @@ describe('withViewModel', () => {
           }
           case 'class-ref': {
             model = useViewModel(VM1);
+
+            break;
+          }
+          case 'component-ref': {
+            model = useViewModel(Component);
 
             break;
           }
@@ -63,6 +70,8 @@ describe('withViewModel', () => {
         </div>
       );
     });
+
+    return Component;
   };
 
   const createVMStoreWrapper = (vmStore: ViewModelStore) => {
@@ -74,7 +83,7 @@ describe('withViewModel', () => {
   };
 
   const createTests = (
-    accessUsing: 'generic' | 'class-ref' | 'id',
+    accessUsing: 'generic' | 'class-ref' | 'id' | 'component-ref',
     withVmStore?: boolean,
   ) => {
     const createDepthTest = (depth: number) => {
@@ -86,7 +95,7 @@ describe('withViewModel', () => {
         });
 
       test(`renders (${depth} depth)`, async () => {
-        const vmStore = new TestViewModelStoreImpl();
+        const vmStore = new ViewModelStoreImpl();
 
         const WrappedDepthComponent = () => {
           const reversed = [...depthsComponents].reverse();
@@ -144,13 +153,16 @@ describe('withViewModel', () => {
     describe('access using view model id', () => {
       createTests('id', true);
     });
+    describe('access using view model component ref', () => {
+      createTests('component-ref', true);
+    });
   });
 
   describe('scenarios', () => {
     test('container renders VM with fixed id and some child with dynamic id', async ({
       task,
     }) => {
-      const vmStore = new TestViewModelStoreImpl();
+      const vmStore = new ViewModelStoreImpl();
 
       class LayoutVM extends TestViewModelImpl {}
 
@@ -187,7 +199,7 @@ describe('withViewModel', () => {
     test('container remounts VM with fixed id and some child with dynamic id', async ({
       task,
     }) => {
-      const vmStore = new TestViewModelStoreImpl();
+      const vmStore = new ViewModelStoreImpl();
 
       class LayoutVM extends TestViewModelImpl {}
 

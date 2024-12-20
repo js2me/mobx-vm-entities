@@ -126,6 +126,7 @@ export function withViewModel(
           fallback: config?.fallback,
           instances,
           ctx,
+          component: ConnectedViewModel,
         };
 
         const instance =

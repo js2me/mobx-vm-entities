@@ -25,11 +25,23 @@ export function withLazyViewModel<
   loadFunction: () => Promise<LazyViewAndModel<TViewModel, TView>>,
   config?: ViewModelHocConfig<any>,
 ) {
-  return loadable(async () => {
+  const patchedConfig: ViewModelHocConfig<any> = {
+    ...config,
+    ctx: {
+      ...config?.ctx,
+      externalComponent: null,
+    },
+  };
+
+  const lazyVM = loadable(async () => {
     const { Model, View } = await loadFunction();
-    return withViewModel(Model, config)(View);
-  }, config?.fallback) as unknown as ComponentWithViewModel<
+    return withViewModel(Model, patchedConfig)(View);
+  }, patchedConfig?.fallback) as unknown as ComponentWithViewModel<
     TViewModel,
     ComponentProps<TView>
   >;
+
+  patchedConfig.ctx!.externalComponent = lazyVM;
+
+  return lazyVM;
 }

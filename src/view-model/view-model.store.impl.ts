@@ -7,6 +7,15 @@ export class ViewModelStoreImpl extends AbstractViewModelStore {
     config: ViewModelCreateConfig<VM>,
   ): VM {
     const VM = config.VM;
+
+    if (config.component) {
+      this.linkComponent(config.component, VM);
+    }
+
+    if (config.ctx?.externalComponent) {
+      this.linkComponent(config.component, VM);
+    }
+
     return new VM(config);
   }
 }

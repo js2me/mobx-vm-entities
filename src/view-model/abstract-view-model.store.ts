@@ -6,6 +6,7 @@ import {
   runInAction,
 } from 'mobx';
 
+import { ComponentWithViewModel } from '../hoc';
 import { generateVMId } from '../utils';
 import { Class, Maybe } from '../utils/types';
 
@@ -13,6 +14,7 @@ import { ViewModelStore } from './view-model.store';
 import {
   ViewModelCreateConfig,
   ViewModelGenerateIdConfig,
+  ViewModelLookup,
 } from './view-model.store.types';
 import { AnyViewModel } from './view-model.types';
 
@@ -20,20 +22,24 @@ export abstract class AbstractViewModelStore<
   VMBase extends AnyViewModel = AnyViewModel,
 > implements ViewModelStore<VMBase>
 {
-  viewModels = observable.map<string, VMBase>();
-  viewModelsByClasses = observable.map<Class<any, any>, string[]>();
+  protected viewModels = observable.map<string, VMBase>();
+  protected linkedComponentVMClasses = new Map<
+    ComponentWithViewModel<VMBase, any>,
+    Class<VMBase>
+  >();
+  protected viewModelIdsByClasses = observable.map<Class<VMBase>, string[]>();
 
-  instanceAttachedCount = new Map<string, number>();
+  protected instanceAttachedCount = new Map<string, number>();
 
   /**
    * Views waiting for mount
    */
-  mountingViews = observable.set<string>();
+  protected mountingViews = observable.set<string>();
 
   /**
    * Views waiting for unmount
    */
-  unmountingViews = observable.set<string>();
+  protected unmountingViews = observable.set<string>();
 
   constructor() {
     computed(this, 'mountedViewsCount');
@@ -66,25 +72,40 @@ export abstract class AbstractViewModelStore<
     }
   }
 
-  getId<T extends VMBase>(idOrClass: Maybe<string | Class<T>>): string | null {
-    if (!idOrClass) return null;
+  linkComponent(
+    component: ComponentWithViewModel<VMBase, any>,
+    VM: Class<VMBase>,
+  ): void {
+    if (!this.linkedComponentVMClasses.has(component)) {
+      this.linkedComponentVMClasses.set(component, VM);
+    }
+  }
 
-    if (typeof idOrClass === 'string') {
-      return idOrClass;
+  getId<T extends VMBase>(
+    lookupPayload: Maybe<ViewModelLookup<T>>,
+  ): string | null {
+    if (!lookupPayload) return null;
+
+    if (typeof lookupPayload === 'string') {
+      return lookupPayload;
     }
 
-    const viewModels = this.viewModelsByClasses.get(idOrClass) || [];
+    const viewModelClass = (this.linkedComponentVMClasses.get(
+      lookupPayload as any,
+    ) || lookupPayload) as Class<T>;
 
-    if (process.env.NODE_ENV !== 'production' && viewModels.length > 1) {
+    const viewModelIds = this.viewModelIdsByClasses.get(viewModelClass) || [];
+
+    if (process.env.NODE_ENV !== 'production' && viewModelIds.length > 1) {
       console.warn(
-        `Found more than 1 view model with the same identifier "${idOrClass.name}". Last instance will been returned`,
+        `Found more than 1 view model with the same identifier "${lookupPayload.name}". Last instance will been returned`,
       );
     }
 
-    return viewModels.at(-1)!;
+    return viewModelIds.at(-1)!;
   }
 
-  has<T extends VMBase>(idOrClass: Maybe<string | Class<T>>): boolean {
+  has<T extends VMBase>(idOrClass: Maybe<ViewModelLookup<T>>): boolean {
     const id = this.getId(idOrClass);
 
     if (!id) return false;
@@ -92,7 +113,7 @@ export abstract class AbstractViewModelStore<
     return this.viewModels.has(id);
   }
 
-  get<T extends VMBase>(idOrClass: Maybe<string | Class<T>>): T | null {
+  get<T extends VMBase>(idOrClass: Maybe<ViewModelLookup<T>>): T | null {
     const id = this.getId(idOrClass);
 
     if (!id) return null;
@@ -132,10 +153,10 @@ export abstract class AbstractViewModelStore<
     this.viewModels.set(model.id, model);
     const constructor = (model as any).constructor as Class<any, any>;
 
-    if (this.viewModelsByClasses.has(constructor)) {
-      this.viewModelsByClasses.get(constructor)!.push(model.id);
+    if (this.viewModelIdsByClasses.has(constructor)) {
+      this.viewModelIdsByClasses.get(constructor)!.push(model.id);
     } else {
-      this.viewModelsByClasses.set(constructor, [model.id]);
+      this.viewModelIdsByClasses.set(constructor, [model.id]);
     }
 
     await this.mount(model);
@@ -157,10 +178,10 @@ export abstract class AbstractViewModelStore<
         await runInAction(async () => {
           this.viewModels.delete(id);
 
-          if (this.viewModelsByClasses.has(constructor)) {
-            this.viewModelsByClasses.set(
+          if (this.viewModelIdsByClasses.has(constructor)) {
+            this.viewModelIdsByClasses.set(
               constructor,
-              this.viewModelsByClasses
+              this.viewModelIdsByClasses
                 .get(constructor)!
                 .filter((id) => id !== model.id),
             );
@@ -182,7 +203,8 @@ export abstract class AbstractViewModelStore<
 
   dispose(): void {
     this.viewModels.clear();
-    this.viewModelsByClasses.clear();
+    this.linkedComponentVMClasses.clear();
+    this.viewModelIdsByClasses.clear();
     this.instanceAttachedCount.clear();
     this.mountingViews.clear();
     this.unmountingViews.clear();

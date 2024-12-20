@@ -24,6 +24,10 @@ export class TestViewModelStoreImpl extends AbstractViewModelStore {
     return new VM(config);
   }
 
+  get _instanceAttachedCount() {
+    return this.instanceAttachedCount;
+  }
+
   generateViewModelId<VM extends ViewModel>(
     config: ViewModelGenerateIdConfig<VM>,
   ): string {
@@ -61,7 +65,7 @@ describe('AbstractViewModelStore', () => {
     const vm = new TestAbstractViewModelImpl({ id: '1' });
     await vmStore.attach(vm);
     expect(vmStore.get('1')).toBe(vm);
-    expect(vmStore.instanceAttachedCount.get('1')).toBe(1);
+    expect(vmStore._instanceAttachedCount.get('1')).toBe(1);
   });
 
   it('is able to detach view model', async () => {
@@ -70,7 +74,7 @@ describe('AbstractViewModelStore', () => {
     await vmStore.attach(vm);
     await vmStore.detach('1');
     expect(vmStore.get('1')).toBe(null);
-    expect(vmStore.instanceAttachedCount.get('1')).toBe(undefined);
+    expect(vmStore._instanceAttachedCount.get('1')).toBe(undefined);
   });
 
   it('is able to get total mounted views count', async () => {

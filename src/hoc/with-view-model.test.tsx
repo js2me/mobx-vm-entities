@@ -3,9 +3,8 @@ import { observer } from 'mobx-react-lite';
 import { ReactNode, useState } from 'react';
 import { describe, expect, test, vi } from 'vitest';
 
-import { ViewModelStore, ViewModelsProvider } from '..';
+import { ViewModelStore, ViewModelStoreImpl, ViewModelsProvider } from '..';
 import { createCounter } from '../utils';
-import { TestViewModelStoreImpl } from '../view-model/abstract-view-model.store.test';
 import { TestViewModelImpl } from '../view-model/view-model.impl.test';
 
 import { ViewModelProps, withViewModel } from './with-view-model';
@@ -234,7 +233,7 @@ describe('withViewModel', () => {
         );
       });
       const Component = withViewModel(VM, { generateId: () => '1' })(View);
-      const vmStore = new TestViewModelStoreImpl();
+      const vmStore = new ViewModelStoreImpl();
 
       const Wrapper = ({ children }: { children?: ReactNode }) => {
         return (
@@ -270,7 +269,7 @@ describe('withViewModel', () => {
         );
       });
       const Component = withViewModel(VM, { generateId: () => '1' })(View);
-      const vmStore = new TestViewModelStoreImpl();
+      const vmStore = new ViewModelStoreImpl();
 
       const Wrapper = ({ children }: { children?: ReactNode }) => {
         return (
