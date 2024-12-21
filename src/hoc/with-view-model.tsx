@@ -122,11 +122,13 @@ export function withViewModel(
           VM: Model,
           viewModels,
           parentViewModel:
-            (parentViewModel && instances.get(parentViewModel?.id)) || null,
+            (parentViewModel && instances.get(parentViewModel.id)) ||
+            parentViewModel,
           fallback: config?.fallback,
           instances,
           ctx,
           component: ConnectedViewModel,
+          componentProps,
         };
 
         viewModels?.processCreateConfig(configCreate);

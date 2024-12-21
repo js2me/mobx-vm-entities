@@ -3,9 +3,8 @@ import { ComponentType } from 'react';
 import { ComponentWithViewModel } from '../hoc';
 import { AnyObject, Class, Maybe } from '../utils/types';
 
-import { AbstractViewModelParams } from './abstract-view-model.types';
 import { ViewModel } from './view-model';
-import { AnyViewModel } from './view-model.types';
+import { AnyViewModel, ViewModelParams } from './view-model.types';
 
 export interface ViewModelGenerateIdConfig<VM extends AnyViewModel> {
   VM: Class<VM>;
@@ -17,11 +16,12 @@ export interface ViewModelGenerateIdConfig<VM extends AnyViewModel> {
 }
 
 export interface ViewModelCreateConfig<VM extends AnyViewModel>
-  extends AbstractViewModelParams<VM['payload'], VM['parentViewModel']> {
+  extends ViewModelParams<VM['payload'], VM['parentViewModel']> {
   VM: Class<VM>;
   fallback?: ComponentType;
   instances: Map<string, ViewModel>;
   component: ComponentWithViewModel<AnyViewModel, any>;
+  componentProps: AnyObject;
 }
 
 /**
