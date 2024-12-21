@@ -3,15 +3,15 @@
   "version": "4.4.4",
   "scripts": {
     "clean": "rimraf dist",
-    "check": "eslint . --fix && pnpm test:coverage",
+    "check": "eslint . --fix",
     "prebuild": "npm run clean && npm run check",
     "build": "tsc && node ./post-build.mjs",
     "pub": "PUBLISH=true pnpm run build",
+    "prepublish": "pnpm test",
     "pub:patch": "PUBLISH=true PUBLISH_VERSION=patch pnpm run build",
     "pub:minor": "PUBLISH=true PUBLISH_VERSION=minor pnpm run build",
     "pub:major": "PUBLISH=true PUBLISH_VERSION=major pnpm run build",
     "test": "vitest run",
-    "test:update-snapshots": "vitest -u",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
     "dev": "pnpm test:watch"
@@ -21,7 +21,10 @@
     "react",
     "view-model",
     "view",
-    "model"
+    "model",
+    "vm",
+    "mvvm",
+    "mvc"
   ],
   "author": "js2me",
   "license": "MIT",
