@@ -10,7 +10,7 @@ import {
   withViewModel,
 } from './with-view-model';
 
-interface LazyViewAndModel<
+export interface LazyViewAndModel<
   TViewModel extends AnyViewModel,
   TView extends ComponentType<any>,
 > {
