@@ -17,12 +17,10 @@ export interface ViewModelStore<VMBase extends AnyViewModel = AnyViewModel>
   extends Cleanable {
   /**
    * Retrieves the ID of a view model based on a given ID or class type.
-   * @param lookupPayload - The ID or class type of the view model.
+   * @param vmLookup - The ID or class type of the view model. See {@link ViewModelLookup}.
    * @returns The ID of the view model, or null if not found.
    */
-  getId<T extends VMBase>(
-    lookupPayload: Maybe<ViewModelLookup<T>>,
-  ): string | null;
+  getId<T extends VMBase>(vmLookup: Maybe<ViewModelLookup<T>>): string | null;
 
   /**
    * The total number of views that are currently mounted.
@@ -31,17 +29,17 @@ export interface ViewModelStore<VMBase extends AnyViewModel = AnyViewModel>
 
   /**
    * Checks whether a view model instance exists in the store.
-   * @param lookupPayload - The ID or class type of the view model.
+   * @param vmLookup - The ID or class type of the view model. See {@link ViewModelLookup}.
    * @returns True if the instance exists, false otherwise.
    */
-  has<T extends VMBase>(lookupPayload: Maybe<ViewModelLookup<T>>): boolean;
+  has<T extends VMBase>(vmLookup: Maybe<ViewModelLookup<T>>): boolean;
 
   /**
    * Retrieves a view model instance from the store.
-   * @param lookupPayload - The ID or class type of the view model.
+   * @param vmLookup - The ID or class type of the view model. See {@link ViewModelLookup}.
    * @returns The view model instance, or null if not found.
    */
-  get<T extends VMBase>(lookupPayload: Maybe<ViewModelLookup<T>>): T | null;
+  get<T extends VMBase>(vmLookup: Maybe<ViewModelLookup<T>>): T | null;
 
   /**
    * Attaches a view model to the store.
@@ -82,12 +80,20 @@ export interface ViewModelStore<VMBase extends AnyViewModel = AnyViewModel>
   ): void;
 
   /**
-   * Links React components with view model class.
+   * Link React components with view model class.
    * @param VM - The view model class to link to.
    * @param components - The components to link.
    */
   linkComponents(
     VM: Class<VMBase>,
+    ...components: Maybe<ComponentWithViewModel<VMBase, any>>[]
+  ): void;
+
+  /**
+   * Unlink React components with view model class.
+   * @param components - The components to unlink.
+   */
+  unlinkComponents(
     ...components: Maybe<ComponentWithViewModel<VMBase, any>>[]
   ): void;
 

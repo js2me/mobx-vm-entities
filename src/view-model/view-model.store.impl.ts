@@ -100,40 +100,48 @@ export class ViewModelStoreImpl<VMBase extends AnyViewModel = AnyViewModel>
     });
   }
 
-  getId<T extends VMBase>(
-    lookupPayload: Maybe<ViewModelLookup<T>>,
-  ): string | null {
-    if (!lookupPayload) return null;
+  unlinkComponents(
+    ...components: Maybe<ComponentWithViewModel<VMBase, any>>[]
+  ): void {
+    components.forEach((component) => {
+      if (component && this.linkedComponentVMClasses.has(component)) {
+        this.linkedComponentVMClasses.delete(component);
+      }
+    });
+  }
 
-    if (typeof lookupPayload === 'string') {
-      return lookupPayload;
+  getId<T extends VMBase>(vmLookup: Maybe<ViewModelLookup<T>>): string | null {
+    if (!vmLookup) return null;
+
+    if (typeof vmLookup === 'string') {
+      return vmLookup;
     }
 
     const viewModelClass = (this.linkedComponentVMClasses.get(
-      lookupPayload as any,
-    ) || lookupPayload) as Class<T>;
+      vmLookup as any,
+    ) || vmLookup) as Class<T>;
 
     const viewModelIds = this.viewModelIdsByClasses.get(viewModelClass) || [];
 
     if (process.env.NODE_ENV !== 'production' && viewModelIds.length > 1) {
       console.warn(
-        `Found more than 1 view model with the same identifier "${lookupPayload.name}". Last instance will been returned`,
+        `Found more than 1 view model with the same identifier "${vmLookup.name}". Last instance will been returned`,
       );
     }
 
     return viewModelIds.at(-1)!;
   }
 
-  has<T extends VMBase>(idOrClass: Maybe<ViewModelLookup<T>>): boolean {
-    const id = this.getId(idOrClass);
+  has<T extends VMBase>(vmLookup: Maybe<ViewModelLookup<T>>): boolean {
+    const id = this.getId(vmLookup);
 
     if (!id) return false;
 
     return this.viewModels.has(id);
   }
 
-  get<T extends VMBase>(idOrClass: Maybe<ViewModelLookup<T>>): T | null {
-    const id = this.getId(idOrClass);
+  get<T extends VMBase>(vmLookup: Maybe<ViewModelLookup<T>>): T | null {
+    const id = this.getId(vmLookup);
 
     if (!id) return null;
 

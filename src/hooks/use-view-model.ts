@@ -4,13 +4,13 @@ import { ActiveViewModelContext, ViewModelsContext } from '../contexts';
 import { AnyViewModel, ViewModelLookup } from '../view-model';
 
 export const useViewModel = <T extends AnyViewModel>(
-  lookupPayload?: ViewModelLookup<T>,
+  vmLookup?: ViewModelLookup<T>,
 ): T => {
   const viewModels = useContext(ViewModelsContext);
   const activeViewModel = useContext(ActiveViewModelContext);
-  const model = viewModels?.get<T>(lookupPayload);
+  const model = viewModels?.get<T>(vmLookup);
 
-  if (lookupPayload == null || !viewModels) {
+  if (vmLookup == null || !viewModels) {
     if (process.env.NODE_ENV !== 'production' && !viewModels) {
       console.warn(
         'unable to get access to view model by id or class name withouting using ViewModelsStore. Last active view model will be returned',
@@ -27,12 +27,12 @@ export const useViewModel = <T extends AnyViewModel>(
   if (!model) {
     let displayName: string = '';
 
-    if (typeof lookupPayload === 'string') {
-      displayName = lookupPayload;
-    } else if ('name' in lookupPayload) {
-      displayName = lookupPayload.name;
+    if (typeof vmLookup === 'string') {
+      displayName = vmLookup;
+    } else if ('name' in vmLookup) {
+      displayName = vmLookup.name;
     } else {
-      displayName = lookupPayload['displayName'];
+      displayName = vmLookup['displayName'];
     }
 
     throw new Error(`View model not found for ${displayName}`);

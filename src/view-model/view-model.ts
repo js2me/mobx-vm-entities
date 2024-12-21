@@ -1,6 +1,6 @@
 import { AnyObject, Class, EmptyObject } from '../utils/types';
 
-import type { AbstractViewModel } from './abstract-view-model';
+import { ViewModelImpl } from './view-model.impl';
 import { AnyViewModel } from './view-model.types';
 
 /**
@@ -84,5 +84,5 @@ export interface ViewModel<
 
 export type ViewModelClass<T extends AnyViewModel = AnyViewModel> = Class<
   T,
-  ConstructorParameters<typeof AbstractViewModel<T['payload']>>
+  ConstructorParameters<typeof ViewModelImpl<T['payload']>>
 >;

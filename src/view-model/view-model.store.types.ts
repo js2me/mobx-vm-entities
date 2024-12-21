@@ -24,6 +24,9 @@ export interface ViewModelCreateConfig<VM extends AnyViewModel>
   component: ComponentWithViewModel<AnyViewModel, any>;
 }
 
+/**
+ * Which types are possible to look up view model instance in view model store
+ */
 export type ViewModelLookup<T extends AnyViewModel> =
   | AnyViewModel['id']
   | Class<T>
