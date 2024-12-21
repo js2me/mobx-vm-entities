@@ -121,9 +121,7 @@ export function withViewModel(
           payload,
           VM: Model,
           viewModels,
-          parentViewModel:
-            (parentViewModel && instances.get(parentViewModel.id)) ||
-            parentViewModel,
+          parentViewModel,
           fallback: config?.fallback,
           instances,
           ctx,
